@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 import torch
 from torch import nn
@@ -397,6 +397,7 @@ class GroupFlowSampler(nn.Module):
         generator: torch.Generator | Sequence[torch.Generator] | None = None,
         main_conditions: Sequence[torch.Tensor] | None = None,
         glyph_conditions: Sequence[Sequence[GlyphCondition | None]] | None = None,
+        progress_callback: Callable[[int, int], None] | None = None,
     ) -> tuple[tuple[torch.Tensor, ...], ...]:
         """Generate all images in every group from independent Gaussian noise."""
         self._validate_inputs(conditional, unconditional, geometries, generator, main_conditions)
@@ -404,6 +405,8 @@ class GroupFlowSampler(nn.Module):
         timestep_runs = []
         effective_steps = []
         for step_index in range(self.steps):
+            if progress_callback is not None:
+                progress_callback(step_index, self.steps)
             time_value = step_index / self.steps
             runtime_tensor = main_conditions[0]
             main_timesteps = torch.full(
@@ -470,6 +473,8 @@ class GroupFlowSampler(nn.Module):
                 step_sizes,
                 fixed_main=self.timestep_schedule.is_native_edit,
             )
+        if progress_callback is not None:
+            progress_callback(self.steps, self.steps)
         self.last_timestep_stats = TimestepRangeStats.from_timesteps(
             timestep_runs, effective_steps=effective_steps
         )

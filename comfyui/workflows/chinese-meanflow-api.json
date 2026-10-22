@@ -1,0 +1,64 @@
+{
+  "1": {
+    "class_type": "PixTextModelLoader",
+    "inputs": {
+      "model_name": "PixText-MeanFlow",
+      "precision": "bfloat16"
+    }
+  },
+  "2": {
+    "class_type": "PixTextRegionEditor",
+    "inputs": {
+      "image": "example: Chinese New Year",
+      "region_data": "{\"version\": 1, \"source_id\": \"example:chinese\", \"size\": [1024, 1024], \"regions\": [{\"bbox\": [457, 29, 506.2, 94.2], \"text\": \"喜\", \"id\": \"1\", \"enabled\": true}, {\"bbox\": [503, 29.1, 559.4, 92.5], \"text\": \"发\", \"id\": \"2\", \"enabled\": true}, {\"bbox\": [749.5, 32.7, 804.1, 87.3], \"text\": \"甜\", \"id\": \"3\", \"enabled\": true}, {\"bbox\": [846.4, 30.1, 897.4, 88.1], \"text\": \"初\", \"id\": \"4\", \"enabled\": true}, {\"bbox\": [896.6, 30.8, 953, 92.4], \"text\": \"恋\", \"id\": \"5\", \"enabled\": true}, {\"bbox\": [400.7, 360.6, 455.3, 417], \"text\": \"鞭\", \"id\": \"6\", \"enabled\": true}, {\"bbox\": [455.1, 360.6, 509.7, 418.6], \"text\": \"炮\", \"id\": \"7\", \"enabled\": true}, {\"bbox\": [739.8, 362.1, 797.8, 421.9], \"text\": \"给\", \"id\": \"8\", \"enabled\": true}, {\"bbox\": [843.9, 360.5, 898.5, 420.3], \"text\": \"解\", \"id\": \"9\", \"enabled\": true}, {\"bbox\": [898.1, 360.4, 957.9, 422], \"text\": \"馋\", \"id\": \"10\", \"enabled\": true}, {\"bbox\": [506.3, 696.7, 560.9, 751.3], \"text\": \"满\", \"id\": \"11\", \"enabled\": true}, {\"bbox\": [558.1, 698.9, 616.1, 755.3], \"text\": \"满\", \"id\": \"12\", \"enabled\": true}, {\"bbox\": [807.5, 698.2, 853.3, 756.2], \"text\": \"畜\", \"id\": \"13\", \"enabled\": true}]}"
+    }
+  },
+  "3": {
+    "class_type": "PixTextRefine",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "image": [
+        "2",
+        0
+      ],
+      "targets": [
+        "2",
+        1
+      ],
+      "seed": 42,
+      "steps": 4,
+      "guidance": 3.3
+    }
+  },
+  "4": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ],
+      "filename_prefix": "PixText/Chinese-MeanFlow"
+    }
+  },
+  "5": {
+    "class_type": "PixTextCompare",
+    "inputs": {
+      "before": [
+        "2",
+        0
+      ],
+      "after": [
+        "3",
+        0
+      ],
+      "targets": [
+        "2",
+        1
+      ],
+      "padding": 6
+    }
+  }
+}

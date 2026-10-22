@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import math
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -119,6 +119,7 @@ class PixTextPipeline:
         steps: int | None = None,
         guidance_scale: float | None = None,
         sample_id: str = "image",
+        progress_callback: Callable[[int, int], None] | None = None,
     ) -> EditResult:
         return self.edit_batch(
             [image],
@@ -127,6 +128,7 @@ class PixTextPipeline:
             steps=steps,
             guidance_scale=guidance_scale,
             sample_ids=[sample_id],
+            progress_callback=progress_callback,
         )[0]
 
     @torch.inference_mode()
@@ -139,6 +141,7 @@ class PixTextPipeline:
         steps: int | None = None,
         guidance_scale: float | None = None,
         sample_ids: Sequence[str] | None = None,
+        progress_callback: Callable[[int, int], None] | None = None,
     ) -> list[EditResult]:
         if not images or len(images) != len(edits):
             raise ValueError("A batch requires matching nonempty image and edit lists")
@@ -236,6 +239,14 @@ class PixTextPipeline:
                 generator=tuple(generators),
                 main_conditions=tuple(mains),
                 glyph_conditions=tuple(glyphs),
+                progress_callback=(
+                    lambda done, total: progress_callback(
+                        (offset // max_items) * actual_steps + done,
+                        math.ceil(max(map(len, edits)) / max_items) * actual_steps,
+                    )
+                )
+                if progress_callback is not None
+                else None,
             )
             for index, geometry, group in zip(active, geometries, generated, strict=True):
                 # Compose at the reference resolution; restore only the edited footprints.

@@ -1,0 +1,3 @@
+# ComfyUI supplies torch, torchvision, numpy, Pillow and safetensors.
+# Keep its installed versions; only this additional dependency is required.
+opencv-python-headless>=5.0.0.93

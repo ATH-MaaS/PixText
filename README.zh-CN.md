@@ -64,6 +64,37 @@ python examples/run_pipeline.py --case english   # english_case
 
 原始分辨率图片：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[说明文字输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。运行 `python examples/annotate_pipeline.py --case <pipeline|english>` 可重新生成带标注的 SVG 与 PNG 图片。
 
+## ComfyUI
+
+在 **PixText Region Editor** 中直接画框并输入目标字词。四个 PixText 节点分别负责模型加载、区域编辑、文字修复和逐区域对比，结果可连接 ComfyUI 的标准图像节点。
+
+![PixText 区域编辑器](docs/assets/comfyui-editor.jpg)
+
+1. 在运行 ComfyUI 的 Python 环境中安装节点：
+
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/ATH-MaaS/PixText.git
+   python -m pip install -r PixText/requirements.txt
+   ```
+
+   请使用启动 ComfyUI 的 Python。节点复用环境中已有的 PyTorch、torchvision、NumPy、Pillow 和 safetensors。运行需要 CUDA GPU 和可用的 Triton 编译环境。
+2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放入 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。配置、manifest 和字体须与权重一起保留。
+3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或拖入[中文 MeanFlow 工作流](example_workflows/PixText-Chinese-MeanFlow.json)、[中文 Teacher 工作流](example_workflows/PixText-Chinese-Teacher.json)。示例已包含中文原图及全部 13 个目标，无需另行上传图片。
+4. 点击 **Open Region Editor**，画框后输入目标文字，点击 **Apply regions**。保存工作流以保留修改，然后点击 **运行**。
+
+编辑器支持缩放、平移、移动与缩放框、撤销重做、逐区域开关、精确坐标调整以及 JSON 导入导出。**B** 画框，**V** 选择，**空格** 平移，滚轮缩放。缩放查看时仍保存原图坐标。**Example regions** 按钮可恢复中文案例的 13 组标注；上传其他图片时开始新的标注。
+
+接入上游图片时，将 `IMAGE` 连到编辑器的可选输入 `image_in`，先运行一次刷新预览，再打开编辑器并应用标注。将编辑器的 `image` 和 `targets` 输出一起连接到 **Refine Text · PixText**。节点每次处理一张图，图片批处理可使用 Python API；没有启用区域时原样输出输入图。
+
+工作流直接显示实际采样步数：**MeanFlow 为 4 步，Teacher 为 25 步**。在这两个标准模型包之间切换时会同步推荐值，手动设置的其他步数会保留。超过 12 个目标时自动分组处理。`edit_footprint` 输出实际处理范围的蒙版，其范围可能略大于画框；范围外像素保持不变。模型接入 ComfyUI 的加载与卸载管理，运行任务可在采样步之间中断。
+
+**Compare Regions · PixText** 按编号和目标文字展示每个启用区域的“修复前 / 修复后”裁剪。点击 **Open comparison** 可打开大画廊。`padding` 为两侧裁剪添加相同的上下文；`contact_sheet` 输出可连接 Save Image 保存整张对比拼图。两个示例工作流均已接入这个节点。
+
+![PixText 逐区域修复前后对比](docs/assets/comfyui-comparison.jpg)
+
+无界面调用示例：[MeanFlow API 工作流](comfyui/workflows/chinese-meanflow-api.json)、[Teacher API 工作流](comfyui/workflows/chinese-teacher-api.json)。已验证环境：ComfyUI 0.42.0、前端 1.57.1、PyTorch 2.8.0、Pillow 13.0.0。
+
 ## 安装
 
 需要 Python 3.11 或更高版本，以及支持 CUDA 的 GPU。依赖见 [`pyproject.toml`](pyproject.toml)，包括 PyTorch 2.8.0、torchvision 0.23.0 和 Pillow 13.0.0。先安装适合本机 CUDA 环境的 PyTorch 和 torchvision，再安装 PixText：

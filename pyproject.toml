@@ -29,7 +29,7 @@ pixtext = "pixtext.cli:main"
 where = ["src"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 testpaths = ["tests"]
 markers = ["gpu: requires CUDA and local release model packages"]
 

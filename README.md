@@ -5,6 +5,8 @@
 [![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
 [![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
 
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-Region%20Editor-2D8C83)](#comfyui)
+
 ![PixText pipeline](docs/assets/pipeline.png)
 
 **English** | [简体中文](README.zh-CN.md)
@@ -63,6 +65,37 @@ python examples/run_pipeline.py --case english   # english_case
 Results are saved to `outputs/<case>/meanflow.png`, with reproduction metadata in the adjacent JSON file. To run Teacher, prepare `models/PixText-Teacher` and add `--variant teacher`. Use `--model PATH` for a package stored elsewhere and `--output-dir PATH` to choose the output directory. All cases use seed 42.
 
 Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [caption input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). Run `python examples/annotate_pipeline.py --case <pipeline|english>` to rebuild the annotated SVG and PNG images.
+
+## ComfyUI
+
+Draw rectangles directly on your image and enter the intended words in the **PixText Region Editor**. Four PixText nodes handle model loading, region editing, refinement and per-region comparison. Results connect to standard ComfyUI image nodes.
+
+![PixText Region Editor](docs/assets/comfyui-editor.jpg)
+
+1. In your ComfyUI environment, install the custom nodes:
+
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/ATH-MaaS/PixText.git
+   python -m pip install -r PixText/requirements.txt
+   ```
+
+   Use the Python executable that runs ComfyUI. Its existing PyTorch, torchvision, NumPy, Pillow and safetensors installations are reused. A CUDA GPU and a working Triton compiler are required.
+2. Download a complete package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) into `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. Include its configuration, manifest and fonts alongside the weights.
+3. Restart ComfyUI and refresh your browser tab. Open **Templates → PixText**, or drag in [Chinese · MeanFlow](example_workflows/PixText-Chinese-MeanFlow.json) or [Chinese · Teacher](example_workflows/PixText-Chinese-Teacher.json). Both workflows contain the Chinese example image and all 13 targets; no image upload is needed for the example.
+4. Click **Open Region Editor**. Draw a box, type its target text, and choose **Apply regions**. Save the workflow to retain your changes, then click **Run**.
+
+The editor supports zoom, pan, moving/resizing boxes, undo/redo, per-region enable switches, coordinate adjustment and JSON import/export. **B** draws, **V** selects, **Space** pans, and the mouse wheel zooms. Targets use original-image coordinates even while zoomed. The **Example regions** button restores the 13 Chinese targets. Uploading another image starts a separate annotation set.
+
+For upstream images, connect an `IMAGE` to the editor's optional `image_in` input, run once to refresh its preview, then open the editor and apply regions. Connect the editor's `image` and `targets` outputs to **Refine Text · PixText**. It accepts one image at a time; use the Python API for image batches. No enabled regions returns the input unchanged.
+
+The workflow displays the actual sampling steps: **4 for MeanFlow, 25 for Teacher**. Switching between these standard model packages updates the recommended value; custom step counts are retained. More than 12 targets are grouped automatically. `edit_footprint` is a mask of the actual processed area, which can extend beyond the drawn boxes; pixels outside it are preserved. Models participate in ComfyUI's loading/offloading, and running jobs can be interrupted between sampling steps.
+
+**Compare Regions · PixText** shows matching before/after crops for every enabled target, labeled with its number and target text. Use **Open comparison** for a larger gallery. The optional `padding` adds the same context to both crops; its `contact_sheet` output can connect to Save Image. The example workflows already include this node.
+
+![PixText region comparison gallery](docs/assets/comfyui-comparison.jpg)
+
+Headless examples: [MeanFlow API workflow](comfyui/workflows/chinese-meanflow-api.json), [Teacher API workflow](comfyui/workflows/chinese-teacher-api.json). Tested with ComfyUI 0.42.0, frontend 1.57.1, PyTorch 2.8.0 and Pillow 13.0.0.
 
 ## Installation
 
