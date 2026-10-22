@@ -15,7 +15,7 @@ from aiohttp import web
 from comfy import model_management
 from comfy.model_patcher import ModelPatcher
 from comfy.utils import ProgressBar
-from comfy_api.latest import ComfyExtension, io, ui
+from comfy_api.latest import ComfyAPISync, ComfyExtension, io, ui
 from comfy_execution.graph_utils import ExecutionBlocker
 from PIL import Image, ImageDraw, ImageOps
 from server import PromptServer
@@ -34,6 +34,7 @@ MODEL = io.Custom("PIXTEXT_MODEL")
 TARGETS = io.Custom("PIXTEXT_TARGETS")
 COLORS = ("#5eead4", "#fbbf24", "#a5b4fc", "#fb7185", "#7dd3fc", "#d8b4fe")
 folder_paths.add_model_folder_path("pixtext", str(Path(folder_paths.models_dir) / "pixtext"))
+comfy_api_sync = ComfyAPISync()
 
 
 def packages() -> dict[str, Path]:
@@ -391,6 +392,7 @@ class PixTextRefine(io.ComfyNode):
         def callback(done, total):
             model_management.throw_exception_if_processing_interrupted()
             progress.update_absolute(done, total)
+            comfy_api_sync.execution.set_progress(done, total)
 
         result = pipeline.edit(
             source,

@@ -68,3 +68,12 @@
 .pt-recognition[data-low="true"] { color: #fbbf24; }
 
 .pt-region-search { margin: 10px 14px 0; padding: 10px 12px; background: #101923; color: #e4edf5; border: 1px solid #334252; border-radius: 8px; min-width: 0; }
+
+.pt-refiner-progress { padding: 10px; border: 1px solid #394352; border-radius: 10px; color: #edf2f7; background: #18212b; font: 12px system-ui, sans-serif; }
+.pt-refiner-progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.pt-refiner-progress-label { color: #96f2dc; font-weight: 650; }
+.pt-refiner-progress-percent { color: #dce7f2; font-variant-numeric: tabular-nums; }
+.pt-refiner-progress-track { height: 7px; overflow: hidden; border-radius: 99px; background: #0d141c; }
+.pt-refiner-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #36c7b1, #a5f3d0); transition: width 120ms ease-out; }
+.pt-refiner-progress-fill[data-state="error"] { background: #fb7185; }
+.pt-refiner-progress-detail { display: block; margin-top: 7px; color: #a8b7c9; }

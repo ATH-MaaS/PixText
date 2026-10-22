@@ -83,11 +83,11 @@ python examples/run_pipeline.py --case english   # english_case
 3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或拖入[中文 MeanFlow 工作流](example_workflows/PixText-Chinese-MeanFlow.json)、[中文 Teacher 工作流](example_workflows/PixText-Chinese-Teacher.json)。示例已包含中文原图及全部 13 个目标，无需另行上传图片。
 4. 点击 **Open Region Editor**，画框后输入目标文字，点击 **Apply regions**。保存工作流以保留修改，然后点击 **运行**。
 
-编辑器支持缩放、平移、移动与缩放框、撤销重做、逐区域开关、精确坐标调整以及 JSON 导入导出。**B** 画框，**V** 选择，**空格** 平移，滚轮缩放。缩放查看时仍保存原图坐标。**Example regions** 按钮可恢复中文案例的 13 组标注；上传其他图片时开始新的标注。
+编辑器支持缩放、平移、移动与缩放框、撤销重做、逐区域开关、精确坐标调整以及 JSON 导入导出。**B** 画框，**V** 选择，**空格** 平移，滚轮缩放。点击画布中已有的框会选中它，并自动把右侧对应目标卡片滚动到可见位置；**Focus region** 会把选中框居中放大。缩放查看时仍保存原图坐标。**Example regions** 按钮可恢复中文案例的 13 组标注；上传其他图片时开始新的标注。
 
 接入上游图片时，将 `IMAGE` 连到编辑器的可选输入 `image_in`，先运行一次刷新预览，再打开编辑器并应用标注。将编辑器的 `image` 和 `targets` 输出一起连接到 **Refine Text · PixText**。节点每次处理一张图，图片批处理可使用 Python API；没有启用区域时原样输出输入图。
 
-工作流直接显示实际采样步数：**MeanFlow 为 4 步，Teacher 为 25 步**。在这两个标准模型包之间切换时会同步推荐值，手动设置的其他步数会保留。超过 12 个目标时自动分组处理。`edit_footprint` 输出实际处理范围的蒙版，其范围可能略大于画框；范围外像素保持不变。模型接入 ComfyUI 的加载与卸载管理，运行任务可在采样步之间中断。
+Refine 节点会显示自己的实时采样进度，包括分组处理后的已完成步数和总步数。工作流直接显示实际采样步数：**MeanFlow 为 4 步，Teacher 为 25 步**。在这两个标准模型包之间切换时会同步推荐值，手动设置的其他步数会保留。超过 12 个目标时自动分组处理。`edit_footprint` 输出实际处理范围的蒙版，其范围可能略大于画框；范围外像素保持不变。模型接入 ComfyUI 的加载与卸载管理，运行任务可在采样步之间中断。
 
 **Compare Regions · PixText** 按编号和目标文字展示每个启用区域的“修复前 / 修复后”裁剪。点击 **Open comparison** 可打开大画廊。`padding` 为两侧裁剪添加相同的上下文；`contact_sheet` 输出可连接 Save Image 保存整张对比拼图。两个示例工作流均已接入这个节点。
 

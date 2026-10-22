@@ -236,7 +236,7 @@ async function openEditor(node) {
     if (active) handles(box).forEach(([hx, hy]) => { ctx.fillStyle = "#111a24"; ctx.fillRect(tx + hx * scale - 3, ty + hy * scale - 3, 6, 6); ctx.strokeRect(tx + hx * scale - 3, ty + hy * scale - 3, 6, 6); });
     ctx.restore();
   }
-  function select(id, focus = false) { selected = id; search.value = ""; renderList(focus); paint(); }
+  function select(id, focus = true) { selected = id; search.value = ""; renderList(focus); paint(); }
   function remove(id) { snapshot(); rows = rows.filter((r) => r.id !== id); selected = rows[0]?.id ?? null; markDirty(); renderList(); paint(); }
   function renderList(focus = false) {
     const scroll = list.scrollTop; list.replaceChildren(); counter.textContent = `${rows.length}`;
@@ -246,7 +246,7 @@ async function openEditor(node) {
       if (query && !`${row.text} ${row.recognized_text || ""}`.toLocaleLowerCase().includes(query)) return;
       const card = element("div", "pt-card"); card.dataset.id = row.id; card.dataset.enabled = String(row.enabled !== false);
       card.setAttribute("aria-selected", String(row.id === selected));
-      card.addEventListener("click", () => { if (selected !== row.id) select(row.id); });
+      card.addEventListener("click", () => select(row.id, true));
       const top = element("div", "pt-cardtop"), crop = element("canvas", "pt-crop"); crop.width = 100; crop.height = 88;
       const [x0, y0, x1, y1] = row.bbox, cw = x1 - x0, ch = y1 - y0;
       const ratio = Math.min(100 / cw, 88 / ch);
@@ -323,9 +323,10 @@ async function openEditor(node) {
     const found = hit(p);
     if (found && (tool === "select" || found.handle >= 0)) {
       selected = found.row.id; snapshot(); gesture = { type: found.handle >= 0 ? "resize" : "move", p, box: [...found.row.bbox], row: found.row, handle: found.handle };
-      renderList(); paint(); return;
+      renderList(true); paint(); return;
     }
-    if (tool === "select") { selected = found?.row.id ?? null; renderList(); paint(); return; }
+    if (found) { selected = found.row.id; renderList(true); paint(); return; }
+    if (tool === "select") { selected = null; renderList(); paint(); return; }
     if (rows.length >= 256) return setStatus("A maximum of 256 regions is supported.", true);
     gesture = { type: "draw", p }; draft = [p.x, p.y, p.x, p.y];
   });
@@ -432,11 +433,56 @@ function setup(node) {
   node.onRemoved = function (...args) { closeActiveEditor?.(); oldRemoved?.apply(this, args); };
 }
 
+function setupRefiner(node) {
+  if (node.ptProgress) return;
+  const wrap = element("div", "pt-refiner-progress");
+  const row = element("div", "pt-refiner-progress-row");
+  const label = element("span", "pt-refiner-progress-label", "Ready");
+  const percent = element("span", "pt-refiner-progress-percent", "0%");
+  const bar = element("div", "pt-refiner-progress-track");
+  const fill = element("div", "pt-refiner-progress-fill");
+  const detail = element("small", "pt-refiner-progress-detail", "Sampling steps appear here while PixText runs.");
+  bar.append(fill); row.append(label, element("div", "pt-spacer"), percent); wrap.append(row, bar, detail);
+  const dom = node.addDOMWidget("pixtext_progress", "div", wrap, { serialize: false, hideOnZoom: false });
+  dom.computeSize = () => [320, 76];
+  node.setSize([Math.max(360, node.size[0]), Math.max(360, node.size[1])]);
+  const update = (value, max, state = "running") => {
+    const safeMax = Math.max(1, Number(max) || 1), safeValue = Math.max(0, Math.min(safeMax, Number(value) || 0));
+    const ratio = safeValue / safeMax;
+    fill.style.width = `${ratio * 100}%`;
+    percent.textContent = `${Math.round(ratio * 100)}%`;
+    label.textContent = state === "finished" ? "Complete" : state === "error" ? "Error" : "Sampling";
+    detail.textContent = `${Math.round(safeValue)} / ${Math.round(safeMax)} steps`;
+    fill.dataset.state = state;
+  };
+  const progressListener = (event) => {
+    const payload = event.detail || {};
+    const state = payload.nodes?.[String(node.id)] || payload.nodes?.[node.id];
+    if (state) update(state.value, state.max, state.state);
+  };
+  const executingListener = (event) => {
+    if (String(event.detail) === String(node.id)) update(0, 1, "running");
+  };
+  api.addEventListener("progress_state", progressListener);
+  api.addEventListener("executing", executingListener);
+  node.ptProgress = { progressListener, executingListener };
+  const oldRemoved = node.onRemoved;
+  node.onRemoved = function (...args) {
+    api.removeEventListener("progress_state", progressListener);
+    api.removeEventListener("executing", executingListener);
+    oldRemoved?.apply(this, args);
+  };
+}
+
 app.registerExtension({
   name: "PixText.RegionEditor",
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "PixTextRegionEditor") return;
-    const previous = nodeType.prototype.onNodeCreated;
-    nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setup(this); return result; };
+    if (nodeData.name === "PixTextRegionEditor") {
+      const previous = nodeType.prototype.onNodeCreated;
+      nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setup(this); return result; };
+    } else if (nodeData.name === "PixTextRefine") {
+      const previous = nodeType.prototype.onNodeCreated;
+      nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setupRefiner(this); return result; };
+    }
   },
 });
