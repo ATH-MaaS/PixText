@@ -23,10 +23,13 @@ from server import PromptServer
 from pixtext import PixTextPipeline
 
 from .comparison import compare_regions
+from .ocr import detect_words, model_identity
 from .regions import parse_regions
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = "example: Chinese New Year"
+ENGLISH_EXAMPLE = "example: English caption"
+DETECTIONS = io.Custom("PIXTEXT_DETECTIONS")
 MODEL = io.Custom("PIXTEXT_MODEL")
 TARGETS = io.Custom("PIXTEXT_TARGETS")
 COLORS = ("#5eead4", "#fbbf24", "#a5b4fc", "#fb7185", "#7dd3fc", "#d8b4fe")
@@ -147,6 +150,82 @@ class PixTextModelLoader(io.ComfyNode):
         )
 
 
+class PixTextAutoDetect(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id="PixTextAutoDetect",
+            display_name="Detect Words · PixText",
+            category="PixText",
+            description="Local CRAFT word boxes + PP-OCRv6 recognition. Run once, review suggestions in the Region Editor, then apply.",
+            inputs=[
+                io.Combo.Input(
+                    "image",
+                    options=[ENGLISH_EXAMPLE]
+                    + sorted(
+                        str(p.relative_to(folder_paths.get_input_directory()))
+                        for p in Path(folder_paths.get_input_directory()).rglob("*")
+                        if p.is_file() and p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp")
+                    ),
+                    default=ENGLISH_EXAMPLE,
+                    upload=io.UploadType.image,
+                ),
+                io.Float.Input(
+                    "text_threshold", default=0.5, min=0.1, max=0.95, step=0.05, advanced=True
+                ),
+                io.Float.Input(
+                    "link_threshold", default=0.2, min=0.1, max=0.95, step=0.05, advanced=True
+                ),
+                io.Image.Input("image_in", optional=True),
+            ],
+            outputs=[
+                io.Image.Output("image"),
+                DETECTIONS.Output("detections"),
+                io.Image.Output("words_preview"),
+            ],
+            is_output_node=True,
+        )
+
+    @classmethod
+    def execute(cls, image, text_threshold, link_threshold, image_in=None):
+        if image_in is not None:
+            source = tensor_image(image_in)
+        else:
+            path = (
+                ROOT / "examples/english_case/input.png"
+                if image == ENGLISH_EXAMPLE
+                else input_image_path(image)
+            )
+            with Image.open(path) as opened:
+                source = ImageOps.exif_transpose(opened).convert("RGB")
+        document = detect_words(
+            source, Path(folder_paths.models_dir) / "pixtext_ocr", text_threshold, link_threshold
+        )
+        from pixtext import TextEdit
+
+        overlay = image_tensor(
+            annotated(
+                source,
+                [TextEdit(bbox=row["bbox"], text=row["text"]) for row in document["regions"]],
+            )
+        )
+        return io.NodeOutput(
+            image_tensor(source), document, overlay, ui=ui.PreviewImage(overlay, cls=cls)
+        )
+
+    @classmethod
+    def fingerprint_inputs(cls, image, text_threshold, link_threshold, image_in=None):
+        identity = model_identity(Path(folder_paths.models_dir) / "pixtext_ocr")
+        if image_in is not None:
+            return identity
+        path = (
+            ROOT / "examples/english_case/input.png"
+            if image == ENGLISH_EXAMPLE
+            else input_image_path(image)
+        )
+        return identity, file_fingerprint(path)
+
+
 class PixTextRegionEditor(io.ComfyNode):
     @classmethod
     def define_schema(cls):
@@ -178,16 +257,22 @@ class PixTextRegionEditor(io.ComfyNode):
                     optional=True,
                     tooltip="Optional upstream image. Run once to refresh its editor preview.",
                 ),
+                DETECTIONS.Input(
+                    "detections",
+                    optional=True,
+                    tooltip="Connect detections and image from Detect Words. Review and apply before refinement.",
+                ),
             ],
             outputs=[
                 io.Image.Output("image"),
                 TARGETS.Output("targets"),
                 io.Image.Output("regions_preview"),
             ],
+            is_output_node=True,
         )
 
     @classmethod
-    def execute(cls, image, region_data, image_in=None):
+    def execute(cls, image, region_data, image_in=None, detections=None):
         if image_in is not None:
             source = tensor_image(image_in)
             source_id = "pixels:" + hashlib.sha256(source.tobytes()).hexdigest()
@@ -209,10 +294,29 @@ class PixTextRegionEditor(io.ComfyNode):
             "source_id": [source_id],
             "source_size": [list(source.size)],
         }
+        if detections is not None:
+            if (
+                image_in is None
+                or detections["source_id"] != source_id
+                or detections["size"] != list(source.size)
+            ):
+                raise ValueError("Connect the image and detections from the same Detect Words node")
+            ui_data["ocr_suggestions"] = [detections]
         try:
             edits = parse_regions(region_data, *source.size, source_id)
+            if (
+                detections is not None
+                and json.loads(region_data).get("detection_id") != detections["detection_id"]
+            ):
+                raise ValueError(
+                    "Review OCR suggestions in the Region Editor and Apply regions before refinement."
+                )
         except (ValueError, TypeError, json.JSONDecodeError) as exc:
-            ui_data["region_message"] = [str(exc)]
+            ui_data["region_message"] = [
+                f"{len(detections['regions'])} words detected. Open Region Editor, review targets and Apply regions."
+                if detections is not None and region_data.strip() == "{}"
+                else str(exc)
+            ]
             return io.NodeOutput(pixels, ExecutionBlocker(None), pixels, ui=ui_data)
         overlay = image_tensor(annotated(source, edits))
         ui_data.update(ui.PreviewImage(overlay, cls=cls).as_dict())
@@ -224,7 +328,7 @@ class PixTextRegionEditor(io.ComfyNode):
         return io.NodeOutput(pixels, target_data, overlay, ui=ui_data)
 
     @classmethod
-    def fingerprint_inputs(cls, image, region_data, image_in=None):
+    def fingerprint_inputs(cls, image, region_data, image_in=None, detections=None):
         if image_in is not None:
             return None  # Upstream IMAGE dependency is already part of ComfyUI's cache key.
         path = (
@@ -361,7 +465,13 @@ class PixTextCompare(io.ComfyNode):
 
 class PixTextExtension(ComfyExtension):
     async def get_node_list(self):
-        return [PixTextModelLoader, PixTextRegionEditor, PixTextRefine, PixTextCompare]
+        return [
+            PixTextModelLoader,
+            PixTextAutoDetect,
+            PixTextRegionEditor,
+            PixTextRefine,
+            PixTextCompare,
+        ]
 
 
 @PromptServer.instance.routes.get("/pixtext/example/chinese")

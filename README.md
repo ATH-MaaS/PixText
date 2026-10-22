@@ -68,7 +68,7 @@ Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [Mea
 
 ## ComfyUI
 
-Draw rectangles directly on your image and enter the intended words in the **PixText Region Editor**. Four PixText nodes handle model loading, region editing, refinement and per-region comparison. Results connect to standard ComfyUI image nodes.
+Draw rectangles directly on your image and enter the intended words in the **PixText Region Editor**. Five PixText nodes handle model loading, optional word detection, region editing, refinement and per-region comparison. Results connect to standard ComfyUI image nodes.
 
 ![PixText Region Editor](docs/assets/comfyui-editor.jpg)
 
@@ -94,6 +94,31 @@ The workflow displays the actual sampling steps: **4 for MeanFlow, 25 for Teache
 **Compare Regions · PixText** shows matching before/after crops for every enabled target, labeled with its number and target text. Use **Open comparison** for a larger gallery. The optional `padding` adds the same context to both crops; its `contact_sheet` output can connect to Save Image. The example workflows already include this node.
 
 ![PixText region comparison gallery](docs/assets/comfyui-comparison.jpg)
+
+### English workflow with automatic word boxes
+
+[English · Auto Detect](example_workflows/PixText-English-AutoDetect.json) uses the caption example above. **Detect Words · PixText** runs [CRAFT](https://github.com/clovaai/CRAFT-pytorch) through EasyOCR's detector and the official [PP-OCRv6 medium ONNX recognizer](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx) locally on CPU. Install the optional dependencies and models once, using ComfyUI's Python:
+
+```bash
+cd ComfyUI/custom_nodes/PixText
+python -m pip install -r requirements-ocr.txt
+python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
+```
+
+Restart ComfyUI and refresh the browser, then load the English workflow:
+
+1. **Run** once to detect and recognize words. Refinement waits for your review. The supplied image produces 36 candidate regions with the workflow's thresholds; detections can include false positives or split words.
+2. **Open Region Editor**. The detected boxes and recognized text appear automatically, with confidence values. Search for a word to find its card; use **Focus region** to inspect it closely; correct the target text, adjust its box, delete unwanted detections, or draw a missing region. Editing an OCR target automatically enables it; switches also work manually. Unchanged detections start disabled.
+3. For this example, change `Nayeen` → `Nayeon`, `Niicola` → `Nicola`, `crossBody` → `crossbody`, and the word starting `fashion` → `fashionable`. OCR confidence measures recognition of the visible image, not whether the spelling is correct. Keep the remaining regions disabled.
+4. **Apply regions**, save the workflow, then **Run** again. The comparison node shows each selected word before and after repair. Later runs retain your saved boxes and target text. **Reload OCR suggestions** explicitly replaces the editor's current list and supports Undo.
+
+For another image, upload it in **Detect Words**, or connect its optional `image_in`. Connect both its `image` and `detections` outputs to the editor. New images or changed OCR results require review again. A lower `link_threshold` joins more character fragments; raise it if adjacent words merge. The English example uses 0.2 to keep damaged words together. Boxes are axis-aligned repair targets derived from CRAFT quadrilaterals; rotated text may need manual adjustment. This workflow offers word-level suggestions; the Chinese workflow retains its manually reviewed character targets. Model downloads are explicit and checksum-verified; inference sends no images to an external OCR service.
+
+![English OCR suggestions reviewed in the PixText editor](docs/assets/comfyui-english-ocr.jpg)
+
+![Four words repaired with automatically detected boxes](docs/assets/comfyui-english-comparison.jpg)
+
+For headless OCR, submit the [English API workflow](comfyui/workflows/english-autodetect-api.json) once, then copy node 2’s `ocr_suggestions[0]` from the history UI data into its `region_data` JSON string. Set the intended target text and `enabled` flags, retain its `detection_id`, and resubmit for refinement.
 
 Headless examples: [MeanFlow API workflow](comfyui/workflows/chinese-meanflow-api.json), [Teacher API workflow](comfyui/workflows/chinese-teacher-api.json). Tested with ComfyUI 0.42.0, frontend 1.57.1, PyTorch 2.8.0 and Pillow 13.0.0.
 

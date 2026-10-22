@@ -60,7 +60,7 @@ function updateSummary(node) {
   if (!node.ptSummary) return;
   const state = readState(node);
   const rows = state.regions || [];
-  node.ptSummary.count.textContent = `${rows.filter((row) => row.enabled !== false).length} active regions`;
+  node.ptSummary.count.textContent = `${rows.filter((row) => row.enabled !== false).length} active regions${node.ptDetections ? ` · ${node.ptDetections.regions.length} detected` : ""}`;
   node.ptSummary.detail.textContent = state.size ? `${state.size[0]} × ${state.size[1]} · saved in workflow` : "Draw a box, then type the target text";
 }
 let closeActiveEditor = null;
@@ -81,8 +81,9 @@ async function openEditor(node) {
   catch (error) { return toast(error.message); }
   closeActiveEditor?.();
   const saved = readState(node);
+  const suggestions = node.ptDetections?.source_id === sourceId ? node.ptDetections : null;
   const compatible = saved.source_id === sourceId && saved.size?.[0] === image.width && saved.size?.[1] === image.height;
-  let rows = compatible ? clone(saved.regions || []) : [];
+  let rows = compatible ? clone(saved.regions || []) : clone(suggestions?.regions || []);
   let selected = rows[0]?.id ?? null;
   let tool = "draw", scale = 1, tx = 0, ty = 0, gesture = null, draft = null, space = false;
   let undo = [], redo = [], dirty = false, closed = false;
@@ -95,16 +96,16 @@ async function openEditor(node) {
   const header = element("header", "pt-header");
   const title = element("div", "pt-title");
   title.append(element("span", "pt-brand", "PixText"), document.createTextNode("Region Editor"));
-  header.append(title, element("span", "pt-subtitle", "Draw precisely. Tell it what to say."), element("div", "pt-spacer"));
+  header.append(title, element("span", "pt-subtitle", suggestions ? "Detect. Review. Refine." : "Draw precisely. Tell it what to say."), element("div", "pt-spacer"));
   const close = () => {
     if (dirty && !window.confirm("Discard unsaved region changes?")) return;
     dispose();
   };
-  const status = element("span", "pt-status", compatible ? "All regions loaded" : "Ready to draw");
+  const status = element("span", "pt-status", suggestions ? "OCR suggestions · choose words to repair and verify target text" : compatible ? "All regions loaded" : "Ready to draw");
   const save = () => {
     const invalid = rows.find((row) => row.enabled !== false && !row.text.trim());
     if (invalid) { selected = invalid.id; renderList(true); setStatus("Enter target text for every enabled region.", true); return; }
-    writeState(node, { version: 1, source_id: sourceId, size: [image.width, image.height], regions: rows });
+    writeState(node, { version: 1, source_id: sourceId, size: [image.width, image.height], regions: rows, ...(suggestions ? { detection_id: suggestions.detection_id } : {}) });
     dirty = false;
     dispose();
   };
@@ -118,7 +119,7 @@ async function openEditor(node) {
   const zoomLabel = element("span", "pt-hint");
   toolbar.append(drawButton, selectButton, panButton, element("div", "pt-divider"), undoButton, redoButton,
     element("div", "pt-divider"), button("−", () => zoom(1 / 1.25)), zoomLabel,
-    button("+", () => zoom(1.25)), button("Fit", () => fit()), element("div", "pt-spacer"),
+    button("+", () => zoom(1.25)), button("Fit", () => fit()), button("Focus region", () => focusRegion()), element("div", "pt-spacer"),
     element("span", "pt-hint", "B draw · V select · Space pan · Scroll zoom"));
   if (imageName === EXAMPLE && !connected(node)) {
     toolbar.append(button("Example regions", async () => {
@@ -131,6 +132,12 @@ async function openEditor(node) {
       } catch (error) { setStatus(error.message, true); }
     }));
   }
+  if (suggestions) {
+    toolbar.append(button("Reload OCR suggestions", () => {
+      snapshot(); rows = clone(suggestions.regions); selected = rows[0]?.id ?? null;
+      markDirty(); renderList(); paint();
+    }));
+  }
   const body = element("div", "pt-body");
   const stage = element("div", "pt-stage");
   const canvas = element("canvas"); canvas.tabIndex = 0; canvas.setAttribute("aria-label", "Image region drawing canvas");
@@ -141,7 +148,10 @@ async function openEditor(node) {
   sidehead.append(element("strong", "", "Target regions"), counter, element("div", "pt-spacer"));
   const importInput = element("input"); importInput.type = "file"; importInput.accept = ".json,application/json"; importInput.hidden = true;
   sidehead.append(button("Import", () => importInput.click()), button("Export", exportJSON), importInput);
-  const list = element("div", "pt-list"); sidebar.append(sidehead, list);
+  const search = element("input", "pt-region-search"); search.type = "search";
+  search.placeholder = "Find a word or target…"; search.setAttribute("aria-label", "Find region by text");
+  search.addEventListener("input", () => renderList());
+  const list = element("div", "pt-list"); sidebar.append(sidehead, search, list);
   body.append(stage, sidebar);
   const footer = element("footer", "pt-footer");
   footer.append(status, element("div", "pt-spacer"), element("span", "", `${image.width} × ${image.height} · original-image coordinates`));
@@ -172,6 +182,15 @@ async function openEditor(node) {
   function fit() {
     scale = Math.min((stage.clientWidth - 56) / image.width, (stage.clientHeight - 56) / image.height);
     tx = (stage.clientWidth - image.width * scale) / 2; ty = (stage.clientHeight - image.height * scale) / 2; paint();
+  }
+  function focusRegion() {
+    const row = rows.find((item) => item.id === selected);
+    if (!row) return;
+    const [x0, y0, x1, y1] = row.bbox;
+    scale = Math.min(6, (stage.clientWidth - 80) / (x1 - x0 + 120), (stage.clientHeight - 80) / (y1 - y0 + 120));
+    tx = stage.clientWidth / 2 - (x0 + x1) / 2 * scale;
+    ty = stage.clientHeight / 2 - (y0 + y1) / 2 * scale;
+    paint();
   }
   function zoom(factor, x = stage.clientWidth / 2, y = stage.clientHeight / 2) {
     const next = Math.max(.05, Math.min(12, scale * factor));
@@ -217,12 +236,14 @@ async function openEditor(node) {
     if (active) handles(box).forEach(([hx, hy]) => { ctx.fillStyle = "#111a24"; ctx.fillRect(tx + hx * scale - 3, ty + hy * scale - 3, 6, 6); ctx.strokeRect(tx + hx * scale - 3, ty + hy * scale - 3, 6, 6); });
     ctx.restore();
   }
-  function select(id, focus = false) { selected = id; renderList(focus); paint(); }
+  function select(id, focus = false) { selected = id; search.value = ""; renderList(focus); paint(); }
   function remove(id) { snapshot(); rows = rows.filter((r) => r.id !== id); selected = rows[0]?.id ?? null; markDirty(); renderList(); paint(); }
   function renderList(focus = false) {
     const scroll = list.scrollTop; list.replaceChildren(); counter.textContent = `${rows.length}`;
     if (!rows.length) list.append(element("div", "pt-empty", "Draw a rectangle over the text you want to repair. Its target text will appear here."));
     rows.forEach((row, index) => {
+      const query = search.value.trim().toLocaleLowerCase();
+      if (query && !`${row.text} ${row.recognized_text || ""}`.toLocaleLowerCase().includes(query)) return;
       const card = element("div", "pt-card"); card.dataset.id = row.id; card.dataset.enabled = String(row.enabled !== false);
       card.setAttribute("aria-selected", String(row.id === selected));
       card.addEventListener("click", () => { if (selected !== row.id) select(row.id); });
@@ -240,19 +261,34 @@ async function openEditor(node) {
       input.setAttribute("aria-label", `Target text for region ${index + 1}`);
       input.addEventListener("click", (e) => e.stopPropagation());
       input.addEventListener("focus", () => { selected = row.id; snapshot(); [...list.children].forEach((el) => el.setAttribute("aria-selected", String(el === card))); paint(); });
-      input.addEventListener("input", () => { row.text = input.value; markDirty(); });
+      input.addEventListener("input", () => {
+        row.text = input.value;
+        if (row.origin === "ocr") { row.enabled = true; enabled.checked = true; card.dataset.enabled = "true"; }
+        markDirty(); paint();
+      });
+      const recognition = row.origin === "ocr" ? element("div", "pt-recognition") : null;
+      if (recognition) {
+        const score = Number.isFinite(row.confidence) ? `${Math.round(row.confidence * 100)}%` : "—";
+        recognition.textContent = `OCR: ${row.recognized_text} · ${score} confidence`;
+        recognition.dataset.low = String(row.confidence < .85);
+      }
       const coords = element("details", "pt-coords");
+      coords.addEventListener("click", (event) => event.stopPropagation());
       coords.append(element("summary", "", row.bbox.map((v) => Math.round(v * 10) / 10).join(" · ")));
       const fields = element("div", "pt-coordinate-fields");
       ["x0", "y0", "x1", "y1"].forEach((name, k) => {
         const field = element("input"); field.type = "number"; field.step = "0.1"; field.value = String(row.bbox[k]); field.title = name; field.setAttribute("aria-label", `${name} region ${index + 1}`);
+        field.addEventListener("focus", snapshot);
+        field.addEventListener("input", () => {
+          const values = [...fields.children].map((f) => f.value === "" ? NaN : Number(f.value));
+          if (validBox(values)) { row.bbox = values; coords.querySelector("summary").textContent = values.map((v) => Math.round(v * 10) / 10).join(" · "); markDirty(); paint(); }
+        });
         field.addEventListener("change", () => {
-          const values = [...fields.children].map((f) => Number(f.value));
-          if (!validBox(values)) { setStatus("Coordinates must form a valid box inside the image.", true); field.value = String(row.bbox[k]); return; }
-          snapshot(); row.bbox = values; markDirty(); paint();
+          const values = [...fields.children].map((f) => f.value === "" ? NaN : Number(f.value));
+          if (!validBox(values)) { setStatus("Coordinates must form a valid box inside the image.", true); field.value = String(row.bbox[k]); }
         });
         fields.append(field);
-      }); coords.append(fields); card.append(top, input, coords); list.append(card);
+      }); coords.append(fields); card.append(top, input); if (recognition) card.append(recognition); card.append(coords); list.append(card);
       if (focus && row.id === selected) requestAnimationFrame(() => { input.focus(); card.scrollIntoView({ block: "nearest" }); });
     });
     list.scrollTop = scroll;
@@ -351,6 +387,7 @@ async function openEditor(node) {
 function setup(node) {
   if (node.ptSummary) return;
   node.ptSource = node.properties?.pixtext_source ?? null;
+  node.ptDetections = node.properties?.pixtext_detections ?? null;
   const data = widget(node, "region_data");
   if (data) {
     data.type = "hidden"; data.computeSize = () => [0, -4]; data.draw = () => {};
@@ -376,12 +413,19 @@ function setup(node) {
         this.properties.pixtext_source = this.ptSource;
       }
     }
+    if (message.ocr_suggestions?.[0]) {
+      this.ptDetections = message.ocr_suggestions[0];
+      this.properties ??= {};
+      this.properties.pixtext_detections = this.ptDetections;
+    }
     updateSummary(this);
+    if (message.region_message?.[0]) this.ptSummary.detail.textContent = message.region_message[0];
   };
   const oldConfigure = node.onConfigure;
   node.onConfigure = function (...args) {
     oldConfigure?.apply(this, args);
     this.ptSource = this.properties?.pixtext_source ?? this.ptSource;
+    this.ptDetections = this.properties?.pixtext_detections ?? this.ptDetections;
     updateSummary(this);
   };
   const oldRemoved = node.onRemoved;

@@ -1,0 +1,4 @@
+# Optional word detection/recognition; existing ComfyUI torch is reused.
+easyocr==1.7.2
+onnxruntime>=1.23.2,<2
+PyYAML>=6.0.2

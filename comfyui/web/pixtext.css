@@ -63,3 +63,8 @@
   .pt-body { grid-template-columns: minmax(0, 1fr) 265px; }
   .pt-toolbar .pt-hint, .pt-subtitle { display: none; }
 }
+
+.pt-recognition { color: #93a9bd; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; padding: 2px 0 5px; }
+.pt-recognition[data-low="true"] { color: #fbbf24; }
+
+.pt-region-search { margin: 10px 14px 0; padding: 10px 12px; background: #101923; color: #e4edf5; border: 1px solid #334252; border-radius: 8px; min-width: 0; }

@@ -1,0 +1,80 @@
+{
+  "1": {
+    "class_type": "PixTextModelLoader",
+    "inputs": {
+      "model_name": "PixText-MeanFlow",
+      "precision": "bfloat16"
+    }
+  },
+  "2": {
+    "class_type": "PixTextRegionEditor",
+    "inputs": {
+      "image": "example: Chinese New Year",
+      "region_data": "{}",
+      "image_in": [
+        "6",
+        0
+      ],
+      "detections": [
+        "6",
+        1
+      ]
+    }
+  },
+  "3": {
+    "class_type": "PixTextRefine",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "image": [
+        "2",
+        0
+      ],
+      "targets": [
+        "2",
+        1
+      ],
+      "seed": 42,
+      "steps": 4,
+      "guidance": 3.3
+    }
+  },
+  "4": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ],
+      "filename_prefix": "PixText/English-AutoDetect"
+    }
+  },
+  "5": {
+    "class_type": "PixTextCompare",
+    "inputs": {
+      "before": [
+        "2",
+        0
+      ],
+      "after": [
+        "3",
+        0
+      ],
+      "targets": [
+        "2",
+        1
+      ],
+      "padding": 6
+    }
+  },
+  "6": {
+    "class_type": "PixTextAutoDetect",
+    "inputs": {
+      "image": "example: English caption",
+      "text_threshold": 0.5,
+      "link_threshold": 0.2
+    }
+  }
+}

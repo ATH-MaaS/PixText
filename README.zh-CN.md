@@ -66,7 +66,7 @@ python examples/run_pipeline.py --case english   # english_case
 
 ## ComfyUI
 
-在 **PixText Region Editor** 中直接画框并输入目标字词。四个 PixText 节点分别负责模型加载、区域编辑、文字修复和逐区域对比，结果可连接 ComfyUI 的标准图像节点。
+在 **PixText Region Editor** 中直接画框并输入目标字词。五个 PixText 节点分别负责模型加载、可选的自动单词检测、区域编辑、文字修复和逐区域对比，结果可连接 ComfyUI 的标准图像节点。
 
 ![PixText 区域编辑器](docs/assets/comfyui-editor.jpg)
 
@@ -94,6 +94,29 @@ python examples/run_pipeline.py --case english   # english_case
 ![PixText 逐区域修复前后对比](docs/assets/comfyui-comparison.jpg)
 
 无界面调用示例：[MeanFlow API 工作流](comfyui/workflows/chinese-meanflow-api.json)、[Teacher API 工作流](comfyui/workflows/chinese-teacher-api.json)。已验证环境：ComfyUI 0.42.0、前端 1.57.1、PyTorch 2.8.0、Pillow 13.0.0。
+
+### 英文自动检测工作流
+
+[English · Auto Detect](example_workflows/PixText-English-AutoDetect.json) 使用上面的英文说明文字案例。新增 **Detect Words · PixText**，通过 EasyOCR 的 [CRAFT 检测器](https://github.com/clovaai/CRAFT-pytorch) 预测单词框，再用官方 [PP-OCRv6 medium ONNX 模型](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx) 识别裁剪区域。OCR 在本机 CPU 运行。使用运行 ComfyUI 的 Python 安装可选依赖与模型：
+
+```bash
+cd ComfyUI/custom_nodes/PixText
+python -m pip install -r requirements-ocr.txt
+python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
+```
+
+重启 ComfyUI 并刷新浏览器后，载入英文工作流：
+
+1. 先点 **Run**，自动检测识别单词；修复节点会等待审核。示例参数下有 36 个候选区域，可能包含误检或断开的词。
+2. 点 **Open Region Editor**，自动框、识别文字和置信度会直接出现。可以搜索文字定位卡片，用 **Focus region** 放大查看，再调整框、删除误检、补画漏检框，并输入目标词。修改 OCR 目标文字会自动启用该区域，也可以手动勾选；初始候选全部未勾选。
+3. 示例中将 `Nayeen` 改为 `Nayeon`、`Niicola` 改为 `Nicola`、`crossBody` 改为 `crossbody`，以及以 `fashion` 开头的错误词改为 `fashionable`。其余区域保持关闭。置信度仅表示识别器对图中文字的把握，不能判断原词拼写是否正确。
+4. 点 **Apply regions**，保存工作流，再点 **Run**。对比节点会逐词展示修复前后。后续重跑保留已保存的目标词和框；**Reload OCR suggestions** 可显式重置为检测结果，支持撤销。
+
+更换图片时，在 **Detect Words** 中上传，或连接可选的 `image_in`；将其 `image` 和 `detections` 一起接入编辑器。新图片或检测结果变化后需要重新审核。降低 `link_threshold` 能连接更多碎片，邻词粘连时可以调高；英文示例使用 0.2，使受损单词保持完整。修复框是 CRAFT 四边形的轴对齐外接框，倾斜文字可能需要人工微调。本工作流提供单词级建议，中文工作流继续使用已审核的字符框。模型需显式下载并校验 SHA-256，推理不会把图片发送给外部 OCR 服务。
+
+![在 PixText 编辑器中审核英文自动框](docs/assets/comfyui-english-ocr.jpg)
+
+![自动框选取的四个英文词修复对比](docs/assets/comfyui-english-comparison.jpg)
 
 ## 安装
 
