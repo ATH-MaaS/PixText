@@ -5,6 +5,8 @@
 [![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
 [![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
 
+![PixText pipeline](docs/assets/pipeline.png)
+
 **English** | [简体中文](README.zh-CN.md)
 
 PixText refines local text in pixel space. Provide an image, the regions to edit, and the target text. The model generates those regions using the image as context and preserves pixels outside the actual edited footprints. Multiple targets are generated jointly.
@@ -61,10 +63,6 @@ python examples/run_pipeline.py --case english   # english_case
 Results are saved to `outputs/<case>/meanflow.png`, with reproduction metadata in the adjacent JSON file. To run Teacher, prepare `models/PixText-Teacher` and add `--variant teacher`. Use `--model PATH` for a package stored elsewhere and `--output-dir PATH` to choose the output directory. All cases use seed 42.
 
 Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [caption input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). Run `python examples/annotate_pipeline.py --case <pipeline|english>` to rebuild the annotated SVG and PNG images.
-
-## Method
-
-![PixText pipeline](docs/assets/pipeline.png)
 
 ## Installation
 

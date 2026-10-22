@@ -5,6 +5,8 @@
 [![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
 [![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
 
+![PixText 流程](docs/assets/pipeline.png)
+
 [English](README.md) | **简体中文**
 
 PixText 在像素空间中修复图像中的局部文字。提供图像、待编辑区域和目标文字后，模型会结合图像上下文生成这些区域，并保持实际编辑范围之外的像素不变。多个目标可以联合生成。
@@ -61,10 +63,6 @@ python examples/run_pipeline.py --case english   # english_case
 结果保存到 `outputs/<case>/meanflow.png`，同目录的 JSON 文件记录复现信息。使用 Teacher 时准备好 `models/PixText-Teacher` 并加上 `--variant teacher`。可使用 `--model PATH` 指定其他位置的模型包，使用 `--output-dir PATH` 指定输出目录。两个示例均使用随机种子 42。
 
 原始分辨率图片：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[说明文字输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。运行 `python examples/annotate_pipeline.py --case <pipeline|english>` 可重新生成带标注的 SVG 与 PNG 图片。
-
-## 方法
-
-![PixText 流程](docs/assets/pipeline.png)
 
 ## 安装
 
