@@ -1,0 +1,27 @@
+{
+  "format_version": 1,
+  "models": [
+    {
+      "model_id": "PixText-Teacher",
+      "directory": "models/PixText-Teacher",
+      "weights_sha256": "4717506a7934334fd04755e5d5f22f398fd31c170cc6f3ea76b48cd99458ec28",
+      "steps": 25,
+      "guidance_scale": 3.3,
+      "bundled_fonts": [
+        "AlibabaPuHuiTi-3-55-Regular.ttf",
+        "GoNotoCJKCore-v7.0.ttf"
+      ]
+    },
+    {
+      "model_id": "PixText-MeanFlow",
+      "directory": "models/PixText-MeanFlow",
+      "weights_sha256": "d622bb403165c17853bcb9050e6df97330617df7d22516840f2be719240a08ea",
+      "steps": 4,
+      "guidance_scale": 3.3,
+      "bundled_fonts": [
+        "AlibabaPuHuiTi-3-55-Regular.ttf",
+        "GoNotoCJKCore-v7.0.ttf"
+      ]
+    }
+  ]
+}
