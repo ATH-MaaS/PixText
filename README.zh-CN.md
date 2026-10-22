@@ -1,4 +1,4 @@
-# PixText
+# PixText: Efficient Scene-Text Refinement via Pixel-Space Grouped Image Generation
 
 [![arXiv](https://img.shields.io/badge/arXiv-2610.18284-b31b1b.svg)](https://arxiv.org/abs/2610.18284)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
