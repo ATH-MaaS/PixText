@@ -34,19 +34,20 @@ Each row pairs two targets; every target shows input, MeanFlow output and Teache
 | 6&nbsp;鞭 | <img src="examples/pipeline_case/details/p06_input.png" width="82" alt="鞭 input"> | <img src="examples/pipeline_case/details/p06_meanflow.png" width="82" alt="鞭 meanflow"> | <img src="examples/pipeline_case/details/p06_teacher.png" width="82" alt="鞭 teacher"> | 13&nbsp;畜 | <img src="examples/pipeline_case/details/p13_input.png" width="82" alt="畜 input"> | <img src="examples/pipeline_case/details/p13_meanflow.png" width="82" alt="畜 meanflow"> | <img src="examples/pipeline_case/details/p13_teacher.png" width="82" alt="畜 teacher"> |
 | 7&nbsp;炮 | <img src="examples/pipeline_case/details/p07_input.png" width="82" alt="炮 input"> | <img src="examples/pipeline_case/details/p07_meanflow.png" width="82" alt="炮 meanflow"> | <img src="examples/pipeline_case/details/p07_teacher.png" width="82" alt="炮 teacher"> |  |  |  |  |
 
-**English tagline repair.** [`examples/english_case`](examples/english_case) repairs three damaged spots in a printed tagline: a broken letter plus two words, leaving the surrounding logo untouched.
+**English caption repair.** [`examples/english_case`](examples/english_case) repairs four damaged words in a printed caption, including a misspelled name.
 
 | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- |
-| [<img src="examples/english_case/input_boxed.png" width="220" alt="Tagline input with edit region">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="Tagline MeanFlow output with edit region">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="Tagline Teacher output with edit region">](examples/english_case/teacher_output_boxed.png) |
+| [<img src="examples/english_case/input_boxed.png" width="220" alt="Caption input with edit regions">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="Caption MeanFlow output with edit regions">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="Caption Teacher output with edit regions">](examples/english_case/teacher_output_boxed.png) |
 
-Each row shows one repaired region: input, MeanFlow output and Teacher output.
+Each row shows one repaired word: input, MeanFlow output and Teacher output.
 
-| Region | Input | MeanFlow · 4 steps | Teacher · 25 steps |
+| Word | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- | --- |
-| Worldwide | <img src="examples/english_case/details/worldwide_input.png" width="180" alt="Worldwide input"> | <img src="examples/english_case/details/worldwide_meanflow.png" width="180" alt="Worldwide MeanFlow"> | <img src="examples/english_case/details/worldwide_teacher.png" width="180" alt="Worldwide Teacher"> |
-| Excellence | <img src="examples/english_case/details/excellence_input.png" width="180" alt="Excellence input"> | <img src="examples/english_case/details/excellence_meanflow.png" width="180" alt="Excellence MeanFlow"> | <img src="examples/english_case/details/excellence_teacher.png" width="180" alt="Excellence Teacher"> |
-| Quality | <img src="examples/english_case/details/quality_input.png" width="180" alt="Quality input"> | <img src="examples/english_case/details/quality_meanflow.png" width="180" alt="Quality MeanFlow"> | <img src="examples/english_case/details/quality_teacher.png" width="180" alt="Quality Teacher"> |
+| Nayeen → Nayeon | <img src="examples/english_case/details/nayeon_input.png" width="180" alt="Nayeen input"> | <img src="examples/english_case/details/nayeon_meanflow.png" width="180" alt="Nayeon MeanFlow"> | <img src="examples/english_case/details/nayeon_teacher.png" width="180" alt="Nayeon Teacher"> |
+| Nicola | <img src="examples/english_case/details/nicola_input.png" width="180" alt="Nicola input"> | <img src="examples/english_case/details/nicola_meanflow.png" width="180" alt="Nicola MeanFlow"> | <img src="examples/english_case/details/nicola_teacher.png" width="180" alt="Nicola Teacher"> |
+| crossbody | <img src="examples/english_case/details/crossbody_input.png" width="180" alt="crossbody input"> | <img src="examples/english_case/details/crossbody_meanflow.png" width="180" alt="crossbody MeanFlow"> | <img src="examples/english_case/details/crossbody_teacher.png" width="180" alt="crossbody Teacher"> |
+| fashionable | <img src="examples/english_case/details/fashionable_input.png" width="180" alt="fashionable input"> | <img src="examples/english_case/details/fashionable_meanflow.png" width="180" alt="fashionable MeanFlow"> | <img src="examples/english_case/details/fashionable_teacher.png" width="180" alt="fashionable Teacher"> |
 
 After [installation](#installation), place the complete MeanFlow model package in `models/PixText-MeanFlow` as described in [Model packages](#model-packages), then run:
 
@@ -57,7 +58,7 @@ python examples/run_pipeline.py --case english   # english_case
 
 Results are saved to `outputs/<case>/meanflow.png`, with reproduction metadata in the adjacent JSON file. To run Teacher, prepare `models/PixText-Teacher` and add `--variant teacher`. Use `--model PATH` for a package stored elsewhere and `--output-dir PATH` to choose the output directory. All cases use seed 42.
 
-Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [tagline input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). Run `python examples/annotate_pipeline.py --case <pipeline|english>` to rebuild the annotated SVG and PNG images.
+Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [caption input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). Run `python examples/annotate_pipeline.py --case <pipeline|english>` to rebuild the annotated SVG and PNG images.
 
 ## Method
 
