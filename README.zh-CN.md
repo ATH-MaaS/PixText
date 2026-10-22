@@ -109,7 +109,7 @@ python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 
 1. 先点 **Run**，自动检测识别单词；修复节点会等待审核。示例参数下有 36 个候选区域，可能包含误检或断开的词。
 2. 点 **Open Region Editor**，自动框、识别文字和置信度会直接出现。可以搜索文字定位卡片，用 **Focus region** 放大查看，再调整框、删除误检、补画漏检框，并输入目标词。修改 OCR 目标文字会自动启用该区域，也可以手动勾选；初始候选全部未勾选。
-3. 示例中将 `Nayeen` 改为 `Nayeon`、`Niicola` 改为 `Nicola`、`crossBody` 改为 `crossbody`，以及以 `fashion` 开头的错误词改为 `fashionable`。其余区域保持关闭。置信度仅表示识别器对图中文字的把握，不能判断原词拼写是否正确。
+3. 示例中将 `Nayeen` 改为 `Nayeon`、`Niicola` 改为 `Nicola`、`crossBody` 改为 `crossbody`，以及以 `fashion` 开头的错误词改为 `fashionable`。本例行距较密，可将 `Nayeon` 框的 `y1` 调为 853、`fashionable` 框的 `x1` 调为 344，避开下一行和词后的逗号。其余区域保持关闭。置信度仅表示识别器对图中文字的把握，不能判断原词拼写是否正确。
 4. 点 **Apply regions**，保存工作流，再点 **Run**。对比节点会逐词展示修复前后。后续重跑保留已保存的目标词和框；**Reload OCR suggestions** 可显式重置为检测结果，支持撤销。
 
 更换图片时，在 **Detect Words** 中上传，或连接可选的 `image_in`；将其 `image` 和 `detections` 一起接入编辑器。新图片或检测结果变化后需要重新审核。降低 `link_threshold` 能连接更多碎片，邻词粘连时可以调高；英文示例使用 0.2，使受损单词保持完整。修复框是 CRAFT 四边形的轴对齐外接框，倾斜文字可能需要人工微调。本工作流提供单词级建议，中文工作流继续使用已审核的字符框。模型需显式下载并校验 SHA-256，推理不会把图片发送给外部 OCR 服务。
