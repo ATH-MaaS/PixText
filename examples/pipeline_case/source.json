@@ -1,0 +1,7 @@
+{
+  "sample_id": "pipeline-example",
+  "source_image_sha256": "43ed59051d54d781bde89836ae7338af82d40a79c3302a551cc2cf03ac7eade4",
+  "target_count": 13,
+  "target_coordinates": "axis-aligned bounds of original benchmark polygons, (x0,y0,x1,y1)",
+  "seed": 42
+}

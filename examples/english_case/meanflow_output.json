@@ -1,0 +1,47 @@
+{
+  "model_id": "PixText-MeanFlow",
+  "variant": "meanflow",
+  "seed": 42,
+  "sample_id": "image",
+  "steps": 4,
+  "guidance_scale": 3.3,
+  "guidance_interval": [
+    0.1,
+    1.0
+  ],
+  "precision": "torch.bfloat16",
+  "geometry": [
+    {
+      "offset": 0,
+      "selected_font_indices": [
+        0,
+        0,
+        0
+      ],
+      "reference_size": [
+        1024,
+        1024
+      ],
+      "crops": [
+        [
+          381,
+          402,
+          16,
+          32
+        ],
+        [
+          448,
+          403,
+          128,
+          48
+        ],
+        [
+          590,
+          394,
+          96,
+          48
+        ]
+      ]
+    }
+  ]
+}

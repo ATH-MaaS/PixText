@@ -1,0 +1,7 @@
+{
+  "sample_id": "english-tagline",
+  "source_image_sha256": "8e5bea2f9d3590ea34a9ca4e2c1db94c3f9a5f7c52e1267237ab58ce9953c4e2",
+  "target_count": 3,
+  "target_coordinates": "original-image pixel coordinates (x0,y0,x1,y1)",
+  "seed": 42
+}
