@@ -2,6 +2,8 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2610.18284-b31b1b.svg)](https://arxiv.org/abs/2610.18284)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
+[![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
 
 [English](README.md) | **简体中文**
 
@@ -76,7 +78,7 @@ Pillow 需要支持 RAQM，系统需要提供 HarfBuzz（Debian/Ubuntu 中为 `l
 
 ## 模型包
 
-本仓库不包含模型权重文件。运行示例前，需要准备完整的本地模型包，目录结构如下：
+模型权重可从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载。运行示例前，需要准备完整的本地模型包，目录结构如下：
 
 ```text
 models/
