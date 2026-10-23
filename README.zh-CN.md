@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
 [![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-Registry-2D8C83)](https://registry.comfy.org/publishers/yaoliliu/nodes/pixtext)
 
 ![PixText 流程](docs/assets/pipeline.png)
 

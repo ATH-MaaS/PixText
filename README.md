@@ -5,7 +5,7 @@
 [![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
 [![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
 
-[![ComfyUI](https://img.shields.io/badge/ComfyUI-Region%20Editor-2D8C83)](#comfyui)
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-Registry-2D8C83)](https://registry.comfy.org/publishers/yaoliliu/nodes/pixtext)
 
 ![PixText pipeline](docs/assets/pipeline.png)
 

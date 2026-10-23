@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixtext"
-version = "0.1.1"
+version = "0.1.2"
 description = "PixText scene-text refinement with a visual region editor, local word detection, and before/after comparison"
 readme = "README.md"
 license = "Apache-2.0"
@@ -24,9 +24,9 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/yaoliliu/PixText"
-Documentation = "https://github.com/yaoliliu/PixText/blob/sync/inference-examples-20261022/README.md#comfyui"
-"Bug Tracker" = "https://github.com/yaoliliu/PixText/issues"
+Repository = "https://github.com/ATH-MaaS/PixText"
+Documentation = "https://github.com/ATH-MaaS/PixText#comfyui"
+"Bug Tracker" = "https://github.com/ATH-MaaS/PixText/issues"
 
 [tool.comfy]
 PublisherId = "yaoliliu"
