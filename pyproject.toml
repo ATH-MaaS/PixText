@@ -5,11 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pixtext"
 version = "0.1.0"
-description = "Glyph-conditioned local text refinement in pixel space"
+description = "PixText scene-text refinement with a visual region editor, local word detection, and before/after comparison"
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Environment :: GPU :: NVIDIA CUDA",
+]
 dependencies = [
     "torch==2.8.0",
     "torchvision==0.23.0",
@@ -18,6 +22,18 @@ dependencies = [
     "opencv-python-headless==5.0.0.93",
     "safetensors>=0.4.5",
 ]
+
+[project.urls]
+Repository = "https://github.com/yaoliliu/PixText"
+Documentation = "https://github.com/yaoliliu/PixText/blob/sync/inference-examples-20261022/README.md#comfyui"
+"Bug Tracker" = "https://github.com/yaoliliu/PixText/issues"
+
+[tool.comfy]
+PublisherId = "yaoliliu"
+DisplayName = "PixText"
+Icon = "https://raw.githubusercontent.com/yaoliliu/PixText/sync/inference-examples-20261022/docs/assets/pixtext-icon.svg"
+requires-comfyui = ">=0.42.0"
+includes = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.9", "mypy>=1.14"]

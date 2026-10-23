@@ -66,6 +66,8 @@ python examples/run_pipeline.py --case english   # english_case
 
 ## ComfyUI
 
+在 ComfyUI Manager 中搜索并安装 Registry 节点包 **`pixtext`**（发布者 **`yaoliliu`**），或运行 `comfy node install pixtext`，再按下面的说明下载完整模型包。开发时也可以使用源码安装方式。
+
 在 **PixText Region Editor** 中直接画框并输入目标字词。五个 PixText 节点分别负责模型加载、可选的自动单词检测、区域编辑、文字修复和逐区域对比，结果可连接 ComfyUI 的标准图像节点。
 
 ![PixText 区域编辑器](docs/assets/comfyui-editor.jpg)

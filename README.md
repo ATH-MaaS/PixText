@@ -68,6 +68,8 @@ Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [Mea
 
 ## ComfyUI
 
+Install the Registry package **`pixtext`** (publisher: **`yaoliliu`**) from ComfyUI Manager, or run `comfy node install pixtext`. Then download a model package as described below. The source installation steps remain available for development.
+
 Draw rectangles directly on your image and enter the intended words in the **PixText Region Editor**. Five PixText nodes handle model loading, optional word detection, region editing, refinement and per-region comparison. Results connect to standard ComfyUI image nodes.
 
 ![PixText Region Editor](docs/assets/comfyui-editor.jpg)
