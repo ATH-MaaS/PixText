@@ -20,3 +20,9 @@ outputs/
 .env.*
 *.key
 *.pem
+# Rendered paper examples are available in the source repository; keep only
+# the original images and target JSON needed by the built-in workflows.
+examples/*/details/
+examples/*/*_output*
+examples/*/input_boxed.*
+examples/*/paper_reference.png
