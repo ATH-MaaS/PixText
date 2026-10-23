@@ -94,10 +94,31 @@ def test_more_than_twelve_edits_use_multiple_passes(pipeline):
         TextEdit((8 + 24 * (i % 4), 8 + 24 * (i // 4), 20 + 24 * (i % 4), 24 + 24 * (i // 4)), "丰")
         for i in range(13)
     ]
-    result = pipeline.edit(image(), targets, seed=19)
+    progress = []
+    result = pipeline.edit(
+        image(),
+        targets,
+        seed=19,
+        progress_callback=lambda done, total: progress.append((done, total)),
+    )
     assert [wave["offset"] for wave in result.metadata["geometry"]] == [0, 12]
     assert sum(len(wave["crops"]) for wave in result.metadata["geometry"]) == 13
     assert result.image.size == (128, 128)
+    expected_steps = result.metadata["steps"] * 2
+    assert progress[0] == (0, expected_steps)
+    assert progress[-1] == (expected_steps, expected_steps)
+    assert all(a[0] <= b[0] for a, b in zip(progress, progress[1:]))
+
+
+def test_progress_callback_can_cancel_sampling(pipeline):
+    class Cancelled(Exception):
+        pass
+
+    def cancel(done, total):
+        raise Cancelled()
+
+    with pytest.raises(Cancelled):
+        pipeline.edit(image(), [TextEdit((40, 40, 58, 62), "鹿")], progress_callback=cancel)
 
 
 def test_glyph_coverage_error_identifies_target_text(pipeline):

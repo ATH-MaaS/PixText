@@ -1,0 +1,25 @@
+.pt-comparison { color: #e8eef6; background: #111923; border: 1px solid #334150; border-radius: 12px; font: 12px/1.45 system-ui, sans-serif; display: flex; flex-direction: column; min-height: 0; overflow: hidden; height: 100%; }
+.pt-comparison-header { display: flex; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #334150; flex-shrink: 0; }
+.pt-comparison-header strong { flex: 1; font-size: 13px; }
+.pt-comparison button { background: #203a3b; color: #91edda; border: 1px solid #42625f; border-radius: 7px; padding: 6px 10px; cursor: pointer; font: inherit; }
+.pt-comparison button:hover { border-color: #5eead4; }
+.pt-comparison button:focus-visible { outline: 2px solid #5eead4; outline-offset: 2px; }
+.pt-comparison-list { padding: 10px; overflow: auto; min-height: 0; flex: 1; }
+.pt-comparison-empty { color: #a8b7c9; padding: 28px 16px; text-align: center; }
+.pt-pair { margin-bottom: 12px; padding: 10px; border: 1px solid #334150; background: #1b2532; border-radius: 10px; }
+.pt-pair-title { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+.pt-pair-index { font: 11px ui-monospace, monospace; color: #83a0b7; border: 1px solid #42505e; border-radius: 5px; padding: 2px 5px; }
+.pt-pair-target { color: #7ee7cf; font-size: 17px; font-weight: 600; word-break: break-word; }
+.pt-pair-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pt-pair-image { margin: 0; min-width: 0; background: #0c121b; border-radius: 7px; overflow: hidden; }
+.pt-pair-image figcaption { color: #9aaec2; font: 10px system-ui, sans-serif; letter-spacing: 1px; padding: 6px 9px; border-bottom: 1px solid #273442; }
+.pt-pair-image:last-child figcaption { color: #7ee7cf; }
+.pt-pair-image img { display: block; width: 100%; height: 115px; object-fit: contain; padding: 6px; box-sizing: border-box; }
+.pt-comparison-dialog { width: min(1200px, 94vw); max-height: 92vh; padding: 0; border: 1px solid #40505e; border-radius: 16px; background: #111923; color: #e8eef6; box-shadow: 0 24px 100px #0009; overflow: hidden; }
+.pt-comparison-dialog::backdrop { background: #06090db8; backdrop-filter: blur(6px); }
+.pt-comparison-dialog .pt-comparison { max-height: 90vh; border: 0; }
+.pt-comparison-dialog .pt-comparison-header { padding: 18px 20px; }
+.pt-comparison-dialog .pt-comparison-header strong { font-size: 19px; }
+.pt-comparison-dialog .pt-comparison-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; padding: 18px; align-items: start; }
+.pt-comparison-dialog .pt-pair { margin: 0; padding: 14px; }
+.pt-comparison-dialog .pt-pair-image img { height: 170px; }

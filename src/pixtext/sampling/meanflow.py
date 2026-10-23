@@ -142,6 +142,7 @@ class GroupMeanFlowSampler(GroupFlowSampler):
         generator=None,
         main_conditions=None,
         glyph_conditions=None,
+        progress_callback=None,
     ):
         self._validate_inputs(conditional, unconditional, geometries, generator, main_conditions)
         images = self._initial_noise(geometries, conditional, generator, main_conditions)
@@ -149,6 +150,8 @@ class GroupMeanFlowSampler(GroupFlowSampler):
         timestep_runs = []
         effective_steps = []
         for step_index in range(self.steps):
+            if progress_callback is not None:
+                progress_callback(step_index, self.steps)
             c = (
                 self.progress_grid[step_index]
                 if self.progress_grid is not None
@@ -173,6 +176,8 @@ class GroupMeanFlowSampler(GroupFlowSampler):
             images = self._advance(images, velocities, step_sizes, fixed_main=True)
             timestep_runs.extend((start, end))
             effective_steps.append(step_sizes)
+        if progress_callback is not None:
+            progress_callback(self.steps, self.steps)
         self.last_timestep_stats = TimestepRangeStats.from_timesteps(
             timestep_runs, effective_steps=effective_steps
         )

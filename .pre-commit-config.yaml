@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: credential-check
+        name: Check staged credential material
+        entry: python3 scripts/check_secrets.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true

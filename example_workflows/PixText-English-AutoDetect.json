@@ -1,0 +1,380 @@
+{
+  "last_node_id": 6,
+  "last_link_id": 9,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "PixTextModelLoader",
+      "pos": [
+        530,
+        140
+      ],
+      "size": [
+        350,
+        125
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "PIXTEXT_MODEL",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PixTextModelLoader"
+      },
+      "widgets_values": [
+        "PixText-MeanFlow",
+        "bfloat16"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PixTextRegionEditor",
+      "pos": [
+        530,
+        360
+      ],
+      "size": [
+        350,
+        520
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image_in",
+          "type": "IMAGE",
+          "link": 8
+        },
+        {
+          "name": "detections",
+          "type": "PIXTEXT_DETECTIONS",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            2,
+            5
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "targets",
+          "type": "PIXTEXT_TARGETS",
+          "links": [
+            3,
+            7
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "regions_preview",
+          "type": "IMAGE",
+          "links": [],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PixTextRegionEditor"
+      },
+      "widgets_values": [
+        "example: Chinese New Year",
+        "{}"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "PixTextRefine",
+      "pos": [
+        980,
+        140
+      ],
+      "size": [
+        350,
+        650
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "PIXTEXT_MODEL",
+          "link": 1
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "targets",
+          "type": "PIXTEXT_TARGETS",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            4,
+            6
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "edit_footprint",
+          "type": "MASK",
+          "links": [],
+          "slot_index": 1
+        },
+        {
+          "name": "metadata",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PixTextRefine"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        4,
+        3.3
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SaveImage",
+      "pos": [
+        1500,
+        930
+      ],
+      "size": [
+        430,
+        500
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "PixText/English-AutoDetect"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "PixTextCompare",
+      "pos": [
+        1430,
+        140
+      ],
+      "size": [
+        520,
+        720
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "before",
+          "type": "IMAGE",
+          "link": 5
+        },
+        {
+          "name": "after",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "name": "targets",
+          "type": "PIXTEXT_TARGETS",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "contact_sheet",
+          "type": "IMAGE",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PixTextCompare"
+      },
+      "widgets_values": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PixTextAutoDetect",
+      "pos": [
+        80,
+        140
+      ],
+      "size": [
+        350,
+        650
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image_in",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            8
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "detections",
+          "type": "PIXTEXT_DETECTIONS",
+          "links": [
+            9
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "words_preview",
+          "type": "IMAGE",
+          "links": [],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PixTextAutoDetect"
+      },
+      "widgets_values": [
+        "example: English caption",
+        0.5,
+        0.2
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "PIXTEXT_MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      1,
+      "IMAGE"
+    ],
+    [
+      3,
+      2,
+      1,
+      3,
+      2,
+      "PIXTEXT_TARGETS"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      2,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      6,
+      3,
+      0,
+      5,
+      1,
+      "IMAGE"
+    ],
+    [
+      7,
+      2,
+      1,
+      5,
+      2,
+      "PIXTEXT_TARGETS"
+    ],
+    [
+      8,
+      6,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      9,
+      6,
+      1,
+      2,
+      1,
+      "PIXTEXT_DETECTIONS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.62,
+      "offset": [
+        0,
+        130
+      ]
+    }
+  },
+  "version": 0.4
+}

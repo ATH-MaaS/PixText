@@ -1,0 +1,28 @@
+# Development files do not belong in the Registry runtime archive.
+.git/
+.github/
+.githooks/
+.pre-commit-config.yaml
+tests/
+scripts/check_secrets.py
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+*.egg-info/
+.DS_Store
+# Runtime model packages and local credentials are installed separately.
+models/
+outputs/
+.env
+.env.*
+*.key
+*.pem
+# Rendered paper examples are available in the source repository; keep only
+# the original images and target JSON needed by the built-in workflows.
+examples/*/details/
+examples/*/*_output*
+examples/*/input_boxed.*
+examples/*/paper_reference.png

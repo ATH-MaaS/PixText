@@ -1,7 +1,12 @@
-# PixText
+# PixText: Efficient Scene-Text Refinement via Pixel-Space Grouped Image Generation
 
 [![arXiv](https://img.shields.io/badge/arXiv-2610.18284-b31b1b.svg)](https://arxiv.org/abs/2610.18284)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![Model weights](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Weights-yellow)](https://huggingface.co/ATH-MaaS/PixText)
+[![Benchmark](https://img.shields.io/badge/🤗%20Hugging%20Face-TextRefinementBench-yellow)](https://huggingface.co/datasets/ATH-MaaS/TextRefinementBench)
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-Registry-2D8C83)](https://registry.comfy.org/publishers/yaoliliu/nodes/pixtext)
+
+![PixText 流程](docs/assets/pipeline.png)
 
 [English](README.md) | **简体中文**
 
@@ -34,19 +39,20 @@ PixText 在像素空间中修复图像中的局部文字。提供图像、待编
 | 6&nbsp;鞭 | <img src="examples/pipeline_case/details/p06_input.png" width="82" alt="鞭 input"> | <img src="examples/pipeline_case/details/p06_meanflow.png" width="82" alt="鞭 meanflow"> | <img src="examples/pipeline_case/details/p06_teacher.png" width="82" alt="鞭 teacher"> | 13&nbsp;畜 | <img src="examples/pipeline_case/details/p13_input.png" width="82" alt="畜 input"> | <img src="examples/pipeline_case/details/p13_meanflow.png" width="82" alt="畜 meanflow"> | <img src="examples/pipeline_case/details/p13_teacher.png" width="82" alt="畜 teacher"> |
 | 7&nbsp;炮 | <img src="examples/pipeline_case/details/p07_input.png" width="82" alt="炮 input"> | <img src="examples/pipeline_case/details/p07_meanflow.png" width="82" alt="炮 meanflow"> | <img src="examples/pipeline_case/details/p07_teacher.png" width="82" alt="炮 teacher"> |  |  |  |  |
 
-**英文标语修复。** [`examples/english_case`](examples/english_case) 修复印刷标语中的三处损坏：一个断裂字母和两个单词，周围 logo 保持不变。
+**英文说明文字修复。** [`examples/english_case`](examples/english_case) 修复印刷说明文字中的四个受损单词（含一个人名），其余文字保持不变。
 
 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
 | --- | --- | --- |
-| [<img src="examples/english_case/input_boxed.png" width="220" alt="标语输入及编辑区域">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="标语 MeanFlow 输出及编辑区域">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="标语 Teacher 输出及编辑区域">](examples/english_case/teacher_output_boxed.png) |
+| [<img src="examples/english_case/input_boxed.png" width="220" alt="说明文字输入及编辑区域">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="说明文字 MeanFlow 输出及编辑区域">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="说明文字 Teacher 输出及编辑区域">](examples/english_case/teacher_output_boxed.png) |
 
-每个修复位置一行：输入、MeanFlow 输出与 Teacher 输出。
+每个修复单词一行：输入、MeanFlow 输出与 Teacher 输出。
 
-| 位置 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
+| 单词 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
 | --- | --- | --- | --- |
-| Worldwide | <img src="examples/english_case/details/worldwide_input.png" width="180" alt="Worldwide input"> | <img src="examples/english_case/details/worldwide_meanflow.png" width="180" alt="Worldwide MeanFlow"> | <img src="examples/english_case/details/worldwide_teacher.png" width="180" alt="Worldwide Teacher"> |
-| Excellence | <img src="examples/english_case/details/excellence_input.png" width="180" alt="Excellence input"> | <img src="examples/english_case/details/excellence_meanflow.png" width="180" alt="Excellence MeanFlow"> | <img src="examples/english_case/details/excellence_teacher.png" width="180" alt="Excellence Teacher"> |
-| Quality | <img src="examples/english_case/details/quality_input.png" width="180" alt="Quality input"> | <img src="examples/english_case/details/quality_meanflow.png" width="180" alt="Quality MeanFlow"> | <img src="examples/english_case/details/quality_teacher.png" width="180" alt="Quality Teacher"> |
+| Nayeen → Nayeon | <img src="examples/english_case/details/nayeon_input.png" width="180" alt="Nayeen input"> | <img src="examples/english_case/details/nayeon_meanflow.png" width="180" alt="Nayeon MeanFlow"> | <img src="examples/english_case/details/nayeon_teacher.png" width="180" alt="Nayeon Teacher"> |
+| Nicola | <img src="examples/english_case/details/nicola_input.png" width="180" alt="Nicola input"> | <img src="examples/english_case/details/nicola_meanflow.png" width="180" alt="Nicola MeanFlow"> | <img src="examples/english_case/details/nicola_teacher.png" width="180" alt="Nicola Teacher"> |
+| crossbody | <img src="examples/english_case/details/crossbody_input.png" width="180" alt="crossbody input"> | <img src="examples/english_case/details/crossbody_meanflow.png" width="180" alt="crossbody MeanFlow"> | <img src="examples/english_case/details/crossbody_teacher.png" width="180" alt="crossbody Teacher"> |
+| fashionable | <img src="examples/english_case/details/fashionable_input.png" width="180" alt="fashionable input"> | <img src="examples/english_case/details/fashionable_meanflow.png" width="180" alt="fashionable MeanFlow"> | <img src="examples/english_case/details/fashionable_teacher.png" width="180" alt="fashionable Teacher"> |
 
 完成[安装](#安装)后，按照[模型包](#模型包)说明，将完整 MeanFlow 模型包放在 `models/PixText-MeanFlow`，然后运行：
 
@@ -57,11 +63,54 @@ python examples/run_pipeline.py --case english   # english_case
 
 结果保存到 `outputs/<case>/meanflow.png`，同目录的 JSON 文件记录复现信息。使用 Teacher 时准备好 `models/PixText-Teacher` 并加上 `--variant teacher`。可使用 `--model PATH` 指定其他位置的模型包，使用 `--output-dir PATH` 指定输出目录。两个示例均使用随机种子 42。
 
-原始分辨率图片：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[标语输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。运行 `python examples/annotate_pipeline.py --case <pipeline|english>` 可重新生成带标注的 SVG 与 PNG 图片。
+原始分辨率图片：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[说明文字输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。运行 `python examples/annotate_pipeline.py --case <pipeline|english>` 可重新生成带标注的 SVG 与 PNG 图片。
 
-## 方法
+## ComfyUI
 
-![PixText 流程](docs/assets/pipeline.png)
+直接在图上画框、输入目标字词，并逐区域查看修复前后对比。
+
+### 安装节点
+
+1. 在运行 ComfyUI 的 Python 环境中安装节点：
+
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/ATH-MaaS/PixText.git
+   python -m pip install -r PixText/requirements.txt
+   ```
+
+2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放入 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`（目录结构见[模型包](#模型包)）。文字修复使用 NVIDIA CUDA GPU。
+3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或将下面的工作流文件拖入画布。
+
+### 中文 · 手动画框修复
+
+[下载 MeanFlow 工作流](example_workflows/PixText-Chinese-MeanFlow.json) · [Teacher 版本](example_workflows/PixText-Chinese-Teacher.json)
+
+![中文文字修复工作流：模型加载、区域编辑、文字修复与前后对比](docs/assets/comfyui-workflow-chinese.jpg)
+
+1. 在 **Load PixText Model** 中选择模型。示例已包含原图和 13 个文字区域；MeanFlow 默认 4 步，Teacher 默认 25 步。
+2. 点击 **Open Region Editor**，画框或调整已有框，输入目标文字，再点击 **Apply regions**。
+3. 点击 **运行**，在 **Compare Regions** 中查看逐区域修复前后对比，点击 **Open comparison** 打开完整画廊。保存工作流即可保留框和目标文字。
+
+### 英文 · 自动检测后微调
+
+[下载 Auto Detect 工作流](example_workflows/PixText-English-AutoDetect.json)
+
+![英文文字修复工作流：自动检测单词框、微调目标区域并修复](docs/assets/comfyui-workflow-english.jpg)
+
+在运行 ComfyUI 的 Python 环境中安装单词检测与识别模型：
+
+```bash
+cd ComfyUI/custom_nodes/PixText
+python -m pip install -r requirements-ocr.txt
+python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
+```
+
+重启 ComfyUI 后载入英文工作流：
+
+1. 点击 **运行**，自动检测单词框并识别文字。
+2. 打开 **Region Editor**，微调框并输入目标词。示例修复 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`，勾选需要修复的区域后点击 **Apply regions**。
+3. 再次点击 **运行**，查看所选单词的修复对比。在 **Detect Words** 中上传自己的图片即可开始新案例。
 
 ## 安装
 
@@ -75,7 +124,7 @@ Pillow 需要支持 RAQM，系统需要提供 HarfBuzz（Debian/Ubuntu 中为 `l
 
 ## 模型包
 
-本仓库不包含模型权重文件。运行示例前，需要准备完整的本地模型包，目录结构如下：
+模型权重可从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载。运行示例前，需要准备完整的本地模型包，目录结构如下：
 
 ```text
 models/
