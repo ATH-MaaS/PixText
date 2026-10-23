@@ -68,13 +68,11 @@ Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [Mea
 
 ## ComfyUI
 
-Install the Registry package **`pixtext`** (publisher: **`yaoliliu`**) from ComfyUI Manager, or run `comfy node install pixtext`. Then download a model package as described below. The source installation steps remain available for development.
+Draw text regions, enter the intended words, and compare the repairs directly in ComfyUI.
 
-Draw rectangles directly on your image and enter the intended words in the **PixText Region Editor**. Five PixText nodes handle model loading, optional word detection, region editing, refinement and per-region comparison. Results connect to standard ComfyUI image nodes.
+### Install
 
-![PixText Region Editor](docs/assets/comfyui-editor.jpg)
-
-1. In your ComfyUI environment, install the custom nodes:
+1. Install the nodes using ComfyUI's Python environment:
 
    ```bash
    cd ComfyUI/custom_nodes
@@ -82,24 +80,26 @@ Draw rectangles directly on your image and enter the intended words in the **Pix
    python -m pip install -r PixText/requirements.txt
    ```
 
-   Use the Python executable that runs ComfyUI. Its existing PyTorch, torchvision, NumPy, Pillow and safetensors installations are reused. A CUDA GPU and a working Triton compiler are required.
-2. Download a complete package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) into `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. Include its configuration, manifest and fonts alongside the weights.
-3. Restart ComfyUI and refresh your browser tab. Open **Templates → PixText**, or drag in [Chinese · MeanFlow](example_workflows/PixText-Chinese-MeanFlow.json) or [Chinese · Teacher](example_workflows/PixText-Chinese-Teacher.json). Both workflows contain the Chinese example image and all 13 targets; no image upload is needed for the example.
-4. Click **Open Region Editor**. Draw a box, type its target text, and choose **Apply regions**. Save the workflow to retain your changes, then click **Run**.
+2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) into `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/` (see [Model packages](#model-packages)). Refinement runs on an NVIDIA CUDA GPU.
+3. Restart ComfyUI, refresh the browser, and open **Templates → PixText**, or drag a linked workflow below onto the canvas.
 
-The editor supports zoom, pan, moving/resizing boxes, undo/redo, per-region enable switches, coordinate adjustment and JSON import/export. **B** draws, **V** selects, **Space** pans, and the mouse wheel zooms. Clicking any existing box selects it and scrolls the matching target card into view; **Focus region** centers the selected box. Targets use original-image coordinates even while zoomed. The **Example regions** button restores the 13 Chinese targets. Uploading another image starts a separate annotation set.
+### Chinese · Draw and refine
 
-For upstream images, connect an `IMAGE` to the editor's optional `image_in` input, run once to refresh its preview, then open the editor and apply regions. Connect the editor's `image` and `targets` outputs to **Refine Text · PixText**. It accepts one image at a time; use the Python API for image batches. No enabled regions returns the input unchanged.
+[Download workflow · MeanFlow](example_workflows/PixText-Chinese-MeanFlow.json) · [Teacher variant](example_workflows/PixText-Chinese-Teacher.json)
 
-The Refine node shows its own live sampling progress, including completed steps and the total across grouped passes. The workflow displays the actual sampling steps: **4 for MeanFlow, 25 for Teacher**. Switching between these standard model packages updates the recommended value; custom step counts are retained. More than 12 targets are grouped automatically. `edit_footprint` is a mask of the actual processed area, which can extend beyond the drawn boxes; pixels outside it are preserved. Models participate in ComfyUI's loading/offloading, and running jobs can be interrupted between sampling steps.
+![Chinese text refinement workflow: model loader, region editor, refiner and before/after comparison](docs/assets/comfyui-workflow-chinese.jpg)
 
-**Compare Regions · PixText** shows matching before/after crops for every enabled target, labeled with its number and target text. Use **Open comparison** for a larger gallery. The optional `padding` adds the same context to both crops; its `contact_sheet` output can connect to Save Image. The example workflows already include this node.
+1. Select a model in **Load PixText Model**. The example includes the image and 13 text regions; sampling defaults to 4 steps for MeanFlow or 25 for Teacher.
+2. Click **Open Region Editor**, draw or adjust boxes, and enter the target text. Click **Apply regions**.
+3. Click **Run**. **Compare Regions** displays each repair before and after; **Open comparison** opens the full gallery. Save the workflow to keep your boxes and text.
 
-![PixText region comparison gallery](docs/assets/comfyui-comparison.jpg)
+### English · Detect, adjust and refine
 
-### English workflow with automatic word boxes
+[Download workflow · Auto Detect](example_workflows/PixText-English-AutoDetect.json)
 
-[English · Auto Detect](example_workflows/PixText-English-AutoDetect.json) uses the caption example above. **Detect Words · PixText** runs [CRAFT](https://github.com/clovaai/CRAFT-pytorch) through EasyOCR's detector and the official [PP-OCRv6 medium ONNX recognizer](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx) locally on CPU. Install the optional dependencies and models once, using ComfyUI's Python:
+![English text refinement workflow with automatic word detection and editable regions](docs/assets/comfyui-workflow-english.jpg)
+
+Install the word detector and recognizer once in ComfyUI's Python environment:
 
 ```bash
 cd ComfyUI/custom_nodes/PixText
@@ -107,22 +107,11 @@ python -m pip install -r requirements-ocr.txt
 python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-Restart ComfyUI and refresh the browser, then load the English workflow:
+Restart ComfyUI and load the English workflow:
 
-1. **Run** once to detect and recognize words. Refinement waits for your review. The supplied image produces 36 candidate regions with the workflow's thresholds; detections can include false positives or split words.
-2. **Open Region Editor**. The detected boxes and recognized text appear automatically, with confidence values. Search for a word to find its card; use **Focus region** to inspect it closely; correct the target text, adjust its box, delete unwanted detections, or draw a missing region. Editing an OCR target automatically enables it; switches also work manually. Unchanged detections start disabled.
-3. For this example, change `Nayeen` → `Nayeon`, `Niicola` → `Nicola`, `crossBody` → `crossbody`, and the word starting `fashion` → `fashionable`. OCR confidence measures recognition of the visible image, not whether the spelling is correct. For this tightly spaced caption, set the `Nayeon` box’s `y1` to 853 and the `fashionable` box’s `x1` to 344 to exclude the next line and the trailing comma. Keep the remaining regions disabled.
-4. **Apply regions**, save the workflow, then **Run** again. The comparison node shows each selected word before and after repair. Later runs retain your saved boxes and target text. **Reload OCR suggestions** explicitly replaces the editor's current list and supports Undo.
-
-For another image, upload it in **Detect Words**, or connect its optional `image_in`. Connect both its `image` and `detections` outputs to the editor. New images or changed OCR results require review again. A lower `link_threshold` joins more character fragments; raise it if adjacent words merge. The English example uses 0.2 to keep damaged words together. Boxes are axis-aligned repair targets derived from CRAFT quadrilaterals; rotated text may need manual adjustment. This workflow offers word-level suggestions; the Chinese workflow retains its manually reviewed character targets. Model downloads are explicit and checksum-verified; inference sends no images to an external OCR service.
-
-![English OCR suggestions reviewed in the PixText editor](docs/assets/comfyui-english-ocr.jpg)
-
-![Four words repaired with automatically detected boxes](docs/assets/comfyui-english-comparison.jpg)
-
-For headless OCR, submit the [English API workflow](comfyui/workflows/english-autodetect-api.json) once, then copy node 2’s `ocr_suggestions[0]` from the history UI data into its `region_data` JSON string. Set the intended target text and `enabled` flags, retain its `detection_id`, and resubmit for refinement.
-
-Headless examples: [MeanFlow API workflow](comfyui/workflows/chinese-meanflow-api.json), [Teacher API workflow](comfyui/workflows/chinese-teacher-api.json). Tested with ComfyUI 0.42.0, frontend 1.57.1, PyTorch 2.8.0 and Pillow 13.0.0.
+1. Click **Run** to detect word boxes and recognize their text.
+2. Open **Region Editor**, adjust the boxes and enter the words to repair. For the example, use `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to edit, then click **Apply regions**.
+3. Click **Run** again to refine and compare the selected words. Upload your own image in **Detect Words** to start another case.
 
 ## Installation
 

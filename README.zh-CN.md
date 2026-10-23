@@ -67,11 +67,9 @@ python examples/run_pipeline.py --case english   # english_case
 
 ## ComfyUI
 
-在 ComfyUI Manager 中搜索并安装 Registry 节点包 **`pixtext`**（发布者 **`yaoliliu`**），或运行 `comfy node install pixtext`，再按下面的说明下载完整模型包。开发时也可以使用源码安装方式。
+直接在图上画框、输入目标字词，并逐区域查看修复前后对比。
 
-在 **PixText Region Editor** 中直接画框并输入目标字词。五个 PixText 节点分别负责模型加载、可选的自动单词检测、区域编辑、文字修复和逐区域对比，结果可连接 ComfyUI 的标准图像节点。
-
-![PixText 区域编辑器](docs/assets/comfyui-editor.jpg)
+### 安装
 
 1. 在运行 ComfyUI 的 Python 环境中安装节点：
 
@@ -81,26 +79,26 @@ python examples/run_pipeline.py --case english   # english_case
    python -m pip install -r PixText/requirements.txt
    ```
 
-   请使用启动 ComfyUI 的 Python。节点复用环境中已有的 PyTorch、torchvision、NumPy、Pillow 和 safetensors。运行需要 CUDA GPU 和可用的 Triton 编译环境。
-2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放入 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。配置、manifest 和字体须与权重一起保留。
-3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或拖入[中文 MeanFlow 工作流](example_workflows/PixText-Chinese-MeanFlow.json)、[中文 Teacher 工作流](example_workflows/PixText-Chinese-Teacher.json)。示例已包含中文原图及全部 13 个目标，无需另行上传图片。
-4. 点击 **Open Region Editor**，画框后输入目标文字，点击 **Apply regions**。保存工作流以保留修改，然后点击 **运行**。
+2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放入 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`（目录结构见[模型包](#模型包)）。文字修复使用 NVIDIA CUDA GPU。
+3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或将下面的工作流文件拖入画布。
 
-编辑器支持缩放、平移、移动与缩放框、撤销重做、逐区域开关、精确坐标调整以及 JSON 导入导出。**B** 画框，**V** 选择，**空格** 平移，滚轮缩放。点击画布中已有的框会选中它，并自动把右侧对应目标卡片滚动到可见位置；**Focus region** 会把选中框居中放大。缩放查看时仍保存原图坐标。**Example regions** 按钮可恢复中文案例的 13 组标注；上传其他图片时开始新的标注。
+### 中文 · 手动画框修复
 
-接入上游图片时，将 `IMAGE` 连到编辑器的可选输入 `image_in`，先运行一次刷新预览，再打开编辑器并应用标注。将编辑器的 `image` 和 `targets` 输出一起连接到 **Refine Text · PixText**。节点每次处理一张图，图片批处理可使用 Python API；没有启用区域时原样输出输入图。
+[下载 MeanFlow 工作流](example_workflows/PixText-Chinese-MeanFlow.json) · [Teacher 版本](example_workflows/PixText-Chinese-Teacher.json)
 
-Refine 节点会显示自己的实时采样进度，包括分组处理后的已完成步数和总步数。工作流直接显示实际采样步数：**MeanFlow 为 4 步，Teacher 为 25 步**。在这两个标准模型包之间切换时会同步推荐值，手动设置的其他步数会保留。超过 12 个目标时自动分组处理。`edit_footprint` 输出实际处理范围的蒙版，其范围可能略大于画框；范围外像素保持不变。模型接入 ComfyUI 的加载与卸载管理，运行任务可在采样步之间中断。
+![中文文字修复工作流：模型加载、区域编辑、文字修复与前后对比](docs/assets/comfyui-workflow-chinese.jpg)
 
-**Compare Regions · PixText** 按编号和目标文字展示每个启用区域的“修复前 / 修复后”裁剪。点击 **Open comparison** 可打开大画廊。`padding` 为两侧裁剪添加相同的上下文；`contact_sheet` 输出可连接 Save Image 保存整张对比拼图。两个示例工作流均已接入这个节点。
+1. 在 **Load PixText Model** 中选择模型。示例已包含原图和 13 个文字区域；MeanFlow 默认 4 步，Teacher 默认 25 步。
+2. 点击 **Open Region Editor**，画框或调整已有框，输入目标文字，再点击 **Apply regions**。
+3. 点击 **运行**，在 **Compare Regions** 中查看逐区域修复前后对比，点击 **Open comparison** 打开完整画廊。保存工作流即可保留框和目标文字。
 
-![PixText 逐区域修复前后对比](docs/assets/comfyui-comparison.jpg)
+### 英文 · 自动检测后微调
 
-无界面调用示例：[MeanFlow API 工作流](comfyui/workflows/chinese-meanflow-api.json)、[Teacher API 工作流](comfyui/workflows/chinese-teacher-api.json)。已验证环境：ComfyUI 0.42.0、前端 1.57.1、PyTorch 2.8.0、Pillow 13.0.0。
+[下载 Auto Detect 工作流](example_workflows/PixText-English-AutoDetect.json)
 
-### 英文自动检测工作流
+![英文文字修复工作流：自动检测单词框、微调目标区域并修复](docs/assets/comfyui-workflow-english.jpg)
 
-[English · Auto Detect](example_workflows/PixText-English-AutoDetect.json) 使用上面的英文说明文字案例。新增 **Detect Words · PixText**，通过 EasyOCR 的 [CRAFT 检测器](https://github.com/clovaai/CRAFT-pytorch) 预测单词框，再用官方 [PP-OCRv6 medium ONNX 模型](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx) 识别裁剪区域。OCR 在本机 CPU 运行。使用运行 ComfyUI 的 Python 安装可选依赖与模型：
+在运行 ComfyUI 的 Python 环境中安装单词检测与识别模型：
 
 ```bash
 cd ComfyUI/custom_nodes/PixText
@@ -108,18 +106,11 @@ python -m pip install -r requirements-ocr.txt
 python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-重启 ComfyUI 并刷新浏览器后，载入英文工作流：
+重启 ComfyUI 后载入英文工作流：
 
-1. 先点 **Run**，自动检测识别单词；修复节点会等待审核。示例参数下有 36 个候选区域，可能包含误检或断开的词。
-2. 点 **Open Region Editor**，自动框、识别文字和置信度会直接出现。可以搜索文字定位卡片，用 **Focus region** 放大查看，再调整框、删除误检、补画漏检框，并输入目标词。修改 OCR 目标文字会自动启用该区域，也可以手动勾选；初始候选全部未勾选。
-3. 示例中将 `Nayeen` 改为 `Nayeon`、`Niicola` 改为 `Nicola`、`crossBody` 改为 `crossbody`，以及以 `fashion` 开头的错误词改为 `fashionable`。本例行距较密，可将 `Nayeon` 框的 `y1` 调为 853、`fashionable` 框的 `x1` 调为 344，避开下一行和词后的逗号。其余区域保持关闭。置信度仅表示识别器对图中文字的把握，不能判断原词拼写是否正确。
-4. 点 **Apply regions**，保存工作流，再点 **Run**。对比节点会逐词展示修复前后。后续重跑保留已保存的目标词和框；**Reload OCR suggestions** 可显式重置为检测结果，支持撤销。
-
-更换图片时，在 **Detect Words** 中上传，或连接可选的 `image_in`；将其 `image` 和 `detections` 一起接入编辑器。新图片或检测结果变化后需要重新审核。降低 `link_threshold` 能连接更多碎片，邻词粘连时可以调高；英文示例使用 0.2，使受损单词保持完整。修复框是 CRAFT 四边形的轴对齐外接框，倾斜文字可能需要人工微调。本工作流提供单词级建议，中文工作流继续使用已审核的字符框。模型需显式下载并校验 SHA-256，推理不会把图片发送给外部 OCR 服务。
-
-![在 PixText 编辑器中审核英文自动框](docs/assets/comfyui-english-ocr.jpg)
-
-![自动框选取的四个英文词修复对比](docs/assets/comfyui-english-comparison.jpg)
+1. 点击 **运行**，自动检测单词框并识别文字。
+2. 打开 **Region Editor**，微调框并输入目标词。示例修复 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`，勾选需要修复的区域后点击 **Apply regions**。
+3. 再次点击 **运行**，查看所选单词的修复对比。在 **Detect Words** 中上传自己的图片即可开始新案例。
 
 ## 安装
 
