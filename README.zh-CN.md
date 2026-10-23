@@ -69,7 +69,7 @@ python examples/run_pipeline.py --case english   # english_case
 
 直接在图上画框、输入目标字词，并逐区域查看修复前后对比。
 
-### 安装
+### 安装节点
 
 1. 在运行 ComfyUI 的 Python 环境中安装节点：
 

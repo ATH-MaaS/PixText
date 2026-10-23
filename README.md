@@ -70,7 +70,7 @@ Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [Mea
 
 Draw text regions, enter the intended words, and compare the repairs directly in ComfyUI.
 
-### Install
+### Install nodes
 
 1. Install the nodes using ComfyUI's Python environment:
 
