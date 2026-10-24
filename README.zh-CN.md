@@ -103,10 +103,9 @@ python examples/run_pipeline.py --case english   # english_case
 ```bash
 cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
-python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-重启 ComfyUI 后载入英文工作流：
+按[模型安装说明](docs/ocr-models.zh-CN.md)准备 OCR 模型文件，重启 ComfyUI 后载入英文工作流：
 
 1. 点击 **运行**，自动检测单词框并识别文字。
 2. 打开 **Region Editor**，微调框并输入目标词。示例修复 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`，勾选需要修复的区域后点击 **Apply regions**。

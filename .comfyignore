@@ -5,6 +5,8 @@
 .pre-commit-config.yaml
 tests/
 scripts/check_secrets.py
+# Optional source-install setup helper; Registry users install models separately.
+scripts/download_ocr_models.py
 __pycache__/
 *.py[cod]
 .pytest_cache/
