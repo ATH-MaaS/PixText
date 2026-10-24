@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixtext"
-version = "0.1.2"
+version = "0.1.3"
 description = "PixText scene-text refinement with a visual region editor, local word detection, and before/after comparison"
 readme = "README.md"
 license = "Apache-2.0"
@@ -31,7 +31,7 @@ Documentation = "https://github.com/ATH-MaaS/PixText#comfyui"
 [tool.comfy]
 PublisherId = "yaoliliu"
 DisplayName = "PixText"
-Icon = "https://raw.githubusercontent.com/yaoliliu/PixText/sync/inference-examples-20261022/docs/assets/pixtext-icon.svg"
+Icon = "https://raw.githubusercontent.com/ATH-MaaS/PixText/main/docs/assets/pixtext-icon.svg"
 requires-comfyui = ">=0.42.0"
 includes = []
 

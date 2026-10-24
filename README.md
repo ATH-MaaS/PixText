@@ -104,10 +104,9 @@ Install the word detector and recognizer once in ComfyUI's Python environment:
 ```bash
 cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
-python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-Restart ComfyUI and load the English workflow:
+Prepare the [OCR model files](docs/ocr-models.md), then restart ComfyUI and load the English workflow:
 
 1. Click **Run** to detect word boxes and recognize their text.
 2. Open **Region Editor**, adjust the boxes and enter the words to repair. For the example, use `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to edit, then click **Apply regions**.
