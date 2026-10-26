@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixtext"
-version = "0.1.3"
+version = "0.1.4"
 description = "PixText scene-text refinement with a visual region editor, local word detection, and before/after comparison"
 readme = "README.md"
 license = "Apache-2.0"
@@ -18,7 +18,7 @@ dependencies = [
     "torch==2.8.0",
     "torchvision==0.23.0",
     "numpy==2.2.6",
-    "Pillow==13.0.0",
+    "Pillow>=11.3.0",
     "opencv-python-headless==5.0.0.93",
     "safetensors>=0.4.5",
 ]

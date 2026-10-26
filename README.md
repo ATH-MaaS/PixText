@@ -114,7 +114,7 @@ Prepare the [OCR model files](docs/ocr-models.md), then restart ComfyUI and load
 
 ## Installation
 
-Use Python 3.11 or newer and a CUDA GPU. The dependencies are specified in [`pyproject.toml`](pyproject.toml), including PyTorch 2.8.0, torchvision 0.23.0 and Pillow 13.0.0. Install a CUDA build of PyTorch and torchvision appropriate for your machine, then install PixText:
+Use Python 3.11 or newer and a CUDA GPU. The dependencies are specified in [`pyproject.toml`](pyproject.toml), including PyTorch 2.8.0, torchvision 0.23.0 and Pillow 11.3.0 or newer. Install a CUDA build of PyTorch and torchvision appropriate for your machine, then install PixText:
 
 ```bash
 pip install -e .

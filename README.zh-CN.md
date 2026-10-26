@@ -113,7 +113,7 @@ python -m pip install -r requirements-ocr.txt
 
 ## 安装
 
-需要 Python 3.11 或更高版本，以及支持 CUDA 的 GPU。依赖见 [`pyproject.toml`](pyproject.toml)，包括 PyTorch 2.8.0、torchvision 0.23.0 和 Pillow 13.0.0。先安装适合本机 CUDA 环境的 PyTorch 和 torchvision，再安装 PixText：
+需要 Python 3.11 或更高版本，以及支持 CUDA 的 GPU。依赖见 [`pyproject.toml`](pyproject.toml)，包括 PyTorch 2.8.0、torchvision 0.23.0 和 Pillow 11.3.0 或更高版本。先安装适合本机 CUDA 环境的 PyTorch 和 torchvision，再安装 PixText：
 
 ```bash
 pip install -e .
