@@ -7,6 +7,7 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import folder_paths
 import numpy as np
@@ -24,6 +25,7 @@ from pixtext import PixTextPipeline
 
 from .comparison import compare_regions
 from .ocr import detect_words, model_identity
+from .ocr_models import OCRModelPreparation
 from .regions import parse_regions
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +37,7 @@ TARGETS = io.Custom("PIXTEXT_TARGETS")
 COLORS = ("#5eead4", "#fbbf24", "#a5b4fc", "#fb7185", "#7dd3fc", "#d8b4fe")
 folder_paths.add_model_folder_path("pixtext", str(Path(folder_paths.models_dir) / "pixtext"))
 comfy_api_sync = ComfyAPISync()
+ocr_preparation = OCRModelPreparation(Path(folder_paths.models_dir) / "pixtext_ocr")
 
 
 def packages() -> dict[str, Path]:
@@ -479,6 +482,22 @@ class PixTextExtension(ComfyExtension):
 @PromptServer.instance.routes.get("/pixtext/example/chinese")
 async def chinese_example(request):
     return web.FileResponse(ROOT / "examples/pipeline_case/input.png")
+
+
+@PromptServer.instance.routes.get("/pixtext/ocr/models")
+async def ocr_model_status(request):
+    return web.json_response(ocr_preparation.status(), headers={"Cache-Control": "no-store"})
+
+
+@PromptServer.instance.routes.post("/pixtext/ocr/models/prepare")
+async def prepare_ocr_models(request):
+    origin = request.headers.get("Origin")
+    if request.headers.get("Sec-Fetch-Site") == "cross-site" or (
+        origin and urlsplit(origin).netloc != request.host
+    ):
+        raise web.HTTPForbidden(text="Open OCR setup from this ComfyUI instance")
+    # No client-supplied URLs, paths or shell commands are accepted.
+    return web.json_response(ocr_preparation.prepare(), headers={"Cache-Control": "no-store"})
 
 
 @PromptServer.instance.routes.get("/pixtext/example/chinese/regions")

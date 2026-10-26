@@ -105,9 +105,9 @@ cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
 ```
 
-按[模型安装说明](docs/ocr-models.zh-CN.md)准备 OCR 模型文件，重启 ComfyUI 后载入英文工作流：
+重启 ComfyUI 后载入英文工作流：
 
-1. 点击 **运行**，自动检测单词框并识别文字。
+1. 在 **Detect Words** 中点击一次 **Prepare OCR models**，节点会在运行 ComfyUI 的机器上下载并校验文件。显示 **Verified** 后点击 **运行**，自动检测单词框并识别文字。手动安装方式见 [OCR 模型安装](docs/ocr-models.zh-CN.md)。
 2. 打开 **Region Editor**，微调框并输入目标词。示例修复 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`，勾选需要修复的区域后点击 **Apply regions**。
 3. 再次点击 **运行**，查看所选单词的修复对比。在 **Detect Words** 中上传自己的图片即可开始新案例。
 

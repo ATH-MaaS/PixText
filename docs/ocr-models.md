@@ -2,7 +2,13 @@
 
 [简体中文](ocr-models.zh-CN.md)
 
-The English Auto Detect workflow uses CRAFT for word boxes and PP-OCRv6 for recognition. Download these files and place them in your ComfyUI model directory:
+The English Auto Detect workflow uses CRAFT for word boxes and PP-OCRv6 for recognition. After installing `requirements-ocr.txt`, restart ComfyUI and open the workflow. Click **Prepare OCR models** in **Detect Words**. The node shows download and SHA-256 verification progress, then **Verified**. Models are saved on the machine running ComfyUI, including remote servers. Click **Run** to detect words; no restart is needed after preparing the models.
+
+All Detect Words nodes and browser tabs share a preparation job. Repeated clicks reuse that job; existing verified files are reused. If setup fails, **Retry OCR setup** retries only files that are missing or fail verification.
+
+## Manual installation
+
+Download these files and place them in your ComfyUI model directory:
 
 | Download | Destination under `ComfyUI/models/pixtext_ocr/` |
 | --- | --- |
@@ -16,14 +22,14 @@ From the PixText node folder, verify the installed files with ComfyUI's Python:
 python scripts/verify_ocr_models.py --models ../../models/pixtext_ocr
 ```
 
-The command prints `Verified` for all three files when their SHA-256 checksums match. Restart ComfyUI, refresh the browser, and open the English Auto Detect workflow.
+The command prints `Verified` for all three files when their SHA-256 checksums match. The node refreshes its local model status automatically.
 
-## Source-install shortcut
+## Command-line setup
 
-GitHub source checkouts also include an optional download helper:
+The same preparation engine is available from the command line:
 
 ```bash
 python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-The helper downloads the same pinned files and verifies their checksums. It is maintained in the source repository separately from the Registry runtime package; Registry installations use the downloads above. The local verification command is included in both distributions.
+The helper downloads the same pinned files and verifies their checksums. The button, command-line helper and local verifier are included in both source and Registry packages.

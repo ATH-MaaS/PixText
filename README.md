@@ -106,9 +106,9 @@ cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
 ```
 
-Prepare the [OCR model files](docs/ocr-models.md), then restart ComfyUI and load the English workflow:
+Restart ComfyUI and load the English workflow:
 
-1. Click **Run** to detect word boxes and recognize their text.
+1. In **Detect Words**, click **Prepare OCR models** once. The node downloads and verifies the files on your ComfyUI server. When it shows **Verified**, click **Run** to detect word boxes and recognize their text. See [OCR setup](docs/ocr-models.md) for manual installation.
 2. Open **Region Editor**, adjust the boxes and enter the words to repair. For the example, use `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to edit, then click **Apply regions**.
 3. Click **Run** again to refine and compare the selected words. Upload your own image in **Detect Words** to start another case.
 

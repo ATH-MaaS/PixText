@@ -2,7 +2,13 @@
 
 [English](ocr-models.md)
 
-英文 Auto Detect 工作流使用 CRAFT 检测单词框、PP-OCRv6 识别文字。下载以下文件并放入 ComfyUI 的模型目录：
+英文 Auto Detect 工作流使用 CRAFT 检测单词框、PP-OCRv6 识别文字。安装 `requirements-ocr.txt` 后重启 ComfyUI，打开工作流并点击 **Detect Words** 中的 **Prepare OCR models**。节点会显示下载与 SHA-256 校验进度，完成后显示 **Verified**。文件保存在运行 ComfyUI 的机器上，远程服务器也适用。准备完成后直接点击 **运行**，无需再次重启。
+
+所有 Detect Words 节点和浏览器标签共享同一个准备任务。重复点击会复用任务，已校验通过的文件也会复用。失败时点击 **Retry OCR setup**，只重试缺失或校验不通过的文件。
+
+## 手动安装
+
+下载以下文件并放入 ComfyUI 的模型目录：
 
 | 下载文件 | 在 `ComfyUI/models/pixtext_ocr/` 下的位置 |
 | --- | --- |
@@ -16,14 +22,14 @@
 python scripts/verify_ocr_models.py --models ../../models/pixtext_ocr
 ```
 
-三个文件的 SHA-256 均匹配时，命令会分别输出 `Verified`。随后重启 ComfyUI、刷新浏览器并打开英文 Auto Detect 工作流。
+三个文件的 SHA-256 均匹配时，命令会分别输出 `Verified`。节点会自动刷新本地模型状态。
 
-## 源码安装快捷方式
+## 命令行准备
 
-从 GitHub 克隆的源码还包含可选下载工具：
+也可以通过命令行调用同一套准备工具：
 
 ```bash
 python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-工具会下载并校验同一组固定版本的模型文件。它随 GitHub 源码维护，与 Registry 运行包分开；Registry 安装请使用上表中的下载链接。两种安装方式均包含本地校验命令。
+工具会下载并校验同一组固定版本的模型文件。按钮、命令行下载工具和本地校验工具均随源码与 Registry 包提供。

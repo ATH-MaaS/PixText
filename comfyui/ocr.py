@@ -24,7 +24,7 @@ def model_files(root: Path) -> tuple[Path, Path, Path]:
     missing = [str(p.name) for p in paths if not p.is_file()]
     if missing:
         raise ValueError(
-            "Install the optional OCR models in models/pixtext_ocr first. Missing: "
+            "Install the optional OCR models using Prepare OCR models in Detect Words. Missing: "
             + ", ".join(missing)
         )
     return paths
