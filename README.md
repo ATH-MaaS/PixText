@@ -11,24 +11,22 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-PixText refines local text in pixel space. Provide an image, the regions to edit, and the target text. The model generates those regions using the image as context and preserves pixels outside the actual edited footprints. Multiple targets are generated jointly.
+PixText fixes words and characters in images. Give it an image, boxes around the text you want to change, and the target text. It refines the selected regions together in pixel space, using the surrounding image as context. Pixels outside the actual edit areas stay unchanged.
 
 | Model | Default sampling | Glyph guidance |
 | --- | --- | --- |
 | PixText-Teacher | 25-step Euler | 3.3 |
 | PixText-MeanFlow | 4-step interval Euler | 3.3 |
 
-MeanFlow is the default quick-start choice. Each model package contains its weights, configuration, fonts and SHA-256 checksums. MeanFlow needs no additional text encoder, OCR model, VAE, or teacher.
+Start with MeanFlow. Each model package includes weights, configuration, fonts and SHA-256 checksums. MeanFlow runs without an additional text encoder, OCR model, VAE or teacher.
 
 ## Example
 
-Two input images and their targets are bundled in [`examples/`](examples). Cyan boxes mark the edited regions. Click an image to enlarge it.
+The two examples in [`examples/`](examples) include the input images and target text. Cyan boxes mark the edits. Click an image to view it full size.
 
 | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- |
 | [<img src="examples/pipeline_case/input_boxed.png" width="220" alt="Input with edit regions">](examples/pipeline_case/input_boxed.png) | [<img src="examples/pipeline_case/meanflow_output_boxed.png" width="220" alt="MeanFlow output with edit regions">](examples/pipeline_case/meanflow_output_boxed.png) | [<img src="examples/pipeline_case/teacher_output_boxed.png" width="220" alt="Teacher output with edit regions">](examples/pipeline_case/teacher_output_boxed.png) |
-
-Each row pairs two targets; every target shows input, MeanFlow output and Teacher output.
 
 | # | Input | MeanFlow · 4 steps | Teacher · 25 steps | # | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -40,13 +38,11 @@ Each row pairs two targets; every target shows input, MeanFlow output and Teache
 | 6&nbsp;鞭 | <img src="examples/pipeline_case/details/p06_input.png" width="82" alt="鞭 input"> | <img src="examples/pipeline_case/details/p06_meanflow.png" width="82" alt="鞭 meanflow"> | <img src="examples/pipeline_case/details/p06_teacher.png" width="82" alt="鞭 teacher"> | 13&nbsp;畜 | <img src="examples/pipeline_case/details/p13_input.png" width="82" alt="畜 input"> | <img src="examples/pipeline_case/details/p13_meanflow.png" width="82" alt="畜 meanflow"> | <img src="examples/pipeline_case/details/p13_teacher.png" width="82" alt="畜 teacher"> |
 | 7&nbsp;炮 | <img src="examples/pipeline_case/details/p07_input.png" width="82" alt="炮 input"> | <img src="examples/pipeline_case/details/p07_meanflow.png" width="82" alt="炮 meanflow"> | <img src="examples/pipeline_case/details/p07_teacher.png" width="82" alt="炮 teacher"> |  |  |  |  |
 
-**English caption repair.** [`examples/english_case`](examples/english_case) repairs four damaged words in a printed caption, including a misspelled name.
+The English example in [`examples/english_case`](examples/english_case) repairs four damaged words in a printed caption, including a misspelled name.
 
 | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- |
 | [<img src="examples/english_case/input_boxed.png" width="220" alt="Caption input with edit regions">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="Caption MeanFlow output with edit regions">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="Caption Teacher output with edit regions">](examples/english_case/teacher_output_boxed.png) |
-
-Each row shows one repaired word: input, MeanFlow output and Teacher output.
 
 | Word | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- | --- |
@@ -55,24 +51,24 @@ Each row shows one repaired word: input, MeanFlow output and Teacher output.
 | crossbody | <img src="examples/english_case/details/crossbody_input.png" width="180" alt="crossbody input"> | <img src="examples/english_case/details/crossbody_meanflow.png" width="180" alt="crossbody MeanFlow"> | <img src="examples/english_case/details/crossbody_teacher.png" width="180" alt="crossbody Teacher"> |
 | fashionable | <img src="examples/english_case/details/fashionable_input.png" width="180" alt="fashionable input"> | <img src="examples/english_case/details/fashionable_meanflow.png" width="180" alt="fashionable MeanFlow"> | <img src="examples/english_case/details/fashionable_teacher.png" width="180" alt="fashionable Teacher"> |
 
-After [installation](#installation), place the complete MeanFlow model package in `models/PixText-MeanFlow` as described in [Model packages](#model-packages), then run:
+To run either example, [install PixText](#installation) and place the complete MeanFlow model package in `models/PixText-MeanFlow` (see [Model packages](#model-packages)). Then run:
 
 ```bash
 python examples/run_pipeline.py                  # pipeline_case
 python examples/run_pipeline.py --case english   # english_case
 ```
 
-Results are saved to `outputs/<case>/meanflow.png`, with reproduction metadata in the adjacent JSON file. To run Teacher, prepare `models/PixText-Teacher` and add `--variant teacher`. Use `--model PATH` for a package stored elsewhere and `--output-dir PATH` to choose the output directory. All cases use seed 42.
+The script saves the result to `outputs/<case>/meanflow.png` and writes reproduction metadata to a JSON file beside it. For Teacher, prepare `models/PixText-Teacher` and add `--variant teacher`. Use `--model PATH` if your model package is elsewhere, or `--output-dir PATH` to change where results are saved. Both examples use seed 42.
 
-Full-resolution images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [caption input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). Run `python examples/annotate_pipeline.py --case <pipeline|english>` to rebuild the annotated SVG and PNG images.
+Full-size images: [pipeline input](examples/pipeline_case/input.png), [MeanFlow](examples/pipeline_case/meanflow_output.png), [Teacher](examples/pipeline_case/teacher_output.png); [caption input](examples/english_case/input.png), [MeanFlow](examples/english_case/meanflow_output.png), [Teacher](examples/english_case/teacher_output.png). To regenerate the annotated SVG and PNG images, run `python examples/annotate_pipeline.py --case <pipeline|english>`.
 
 ## ComfyUI
 
-Draw text regions, enter the intended words, and compare the repairs directly in ComfyUI.
+Draw boxes around the text to fix, enter the correct words, and view each repair in ComfyUI.
 
 ### Install nodes
 
-1. Install the nodes using ComfyUI's Python environment:
+1. Clone the nodes and install their dependencies in ComfyUI's Python environment:
 
    ```bash
    cd ComfyUI/custom_nodes
@@ -80,8 +76,8 @@ Draw text regions, enter the intended words, and compare the repairs directly in
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) into `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/` (see [Model packages](#model-packages)). Refinement runs on an NVIDIA CUDA GPU.
-3. Restart ComfyUI, refresh the browser, and open **Templates → PixText**, or drag a linked workflow below onto the canvas.
+2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) and place it in `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. See [Model packages](#model-packages) for the directory layout. Refinement requires an NVIDIA CUDA GPU.
+3. Restart ComfyUI and refresh your browser. Open **Templates → PixText**, or drag one of the workflow files below onto the canvas.
 
 ### Chinese · Draw and refine
 
@@ -89,9 +85,9 @@ Draw text regions, enter the intended words, and compare the repairs directly in
 
 ![Chinese text refinement workflow: model loader, region editor, refiner and before/after comparison](docs/assets/comfyui-workflow-chinese.jpg)
 
-1. Select a model in **Load PixText Model**. The example includes the image and 13 text regions; sampling defaults to 4 steps for MeanFlow or 25 for Teacher.
-2. Click **Open Region Editor**, draw or adjust boxes, and enter the target text. Click **Apply regions**.
-3. Click **Run**. **Compare Regions** displays each repair before and after; **Open comparison** opens the full gallery. Save the workflow to keep your boxes and text.
+1. Choose a model in **Load PixText Model**. The example comes with an image and 13 text regions. MeanFlow defaults to 4 steps; Teacher defaults to 25.
+2. Click **Open Region Editor** to draw or adjust the boxes and enter the target text. Click **Apply regions** when you are done.
+3. Click **Run**, then check each repair in **Compare Regions**. Click **Open comparison** for the full gallery. Saving the workflow keeps your boxes and target text.
 
 ### English · Detect, adjust and refine
 
@@ -99,32 +95,32 @@ Draw text regions, enter the intended words, and compare the repairs directly in
 
 ![English text refinement workflow with automatic word detection and editable regions](docs/assets/comfyui-workflow-english.jpg)
 
-Install the word detector and recognizer once in ComfyUI's Python environment:
+Install the OCR dependencies once in ComfyUI's Python environment:
 
 ```bash
 cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
 ```
 
-Restart ComfyUI and load the English workflow:
+Restart ComfyUI, then open the English workflow:
 
-1. In **Detect Words**, click **Prepare OCR models** once. The node downloads and verifies the files on your ComfyUI server. When it shows **Verified**, click **Run** to detect word boxes and recognize their text. See [OCR setup](docs/ocr-models.md) for manual installation.
-2. Open **Region Editor**, adjust the boxes and enter the words to repair. For the example, use `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to edit, then click **Apply regions**.
-3. Click **Run** again to refine and compare the selected words. Upload your own image in **Detect Words** to start another case.
+1. In **Detect Words**, click **Prepare OCR models** to download and verify the files on your ComfyUI server. When the status reads **Verified**, click **Run** to detect word boxes and read their text. [OCR setup](docs/ocr-models.md) covers manual installation.
+2. Open **Region Editor** and adjust the boxes and target words. The example targets are `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to repair, then click **Apply regions**.
+3. Click **Run** again to repair the selected words and compare the results. To try another image, upload it in **Detect Words**.
 
 ## Installation
 
-Use Python 3.11 or newer and a CUDA GPU. The dependencies are specified in [`pyproject.toml`](pyproject.toml), including PyTorch 2.8.0, torchvision 0.23.0 and Pillow 11.3.0 or newer. Install a CUDA build of PyTorch and torchvision appropriate for your machine, then install PixText:
+PixText requires Python 3.11 or newer and a CUDA GPU. [`pyproject.toml`](pyproject.toml) lists the dependencies, including PyTorch 2.8.0, torchvision 0.23.0 and Pillow 11.3.0 or newer. Install the PyTorch and torchvision builds for your CUDA environment, then install PixText:
 
 ```bash
 pip install -e .
 ```
 
-Pillow must support RAQM. The system must provide HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). Font files are loaded from the model package; no system font installation is required.
+Pillow needs RAQM support, and the system needs HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). PixText loads fonts from the model package, so you do not need to install them as system fonts.
 
 ## Model packages
 
-Download model weights from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText). The examples require complete local model packages arranged as follows:
+Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText). For the Python examples, use this directory layout:
 
 ```text
 models/
@@ -140,7 +136,7 @@ models/
       GoNotoCJKCore-v7.0.ttf
 ```
 
-Teacher uses the same package layout. [`model_index.json`](model_index.json) lists the model identifiers and weight checksums. `from_pretrained` loads a local directory and checks the files listed in its manifest, including the weights, configuration and fonts.
+Teacher uses the same layout. [`model_index.json`](model_index.json) lists model identifiers and weight checksums. When `from_pretrained` loads a local package, it checks the weights, configuration, fonts and other files listed in the manifest.
 
 ## Python
 
@@ -156,7 +152,7 @@ result = pipeline.edit(
 result.image.save("output.png")
 ```
 
-Use `models/PixText-Teacher` to load Teacher. Both variants can coexist in one process. Results contain `image` and `metadata`, including model identity, seed, sample identity, sampling settings, and crop geometry.
+For Teacher, use `models/PixText-Teacher`. You can load both models in one process. Each result contains an `image` and `metadata` with the model identity, seed, sample identity, sampling settings and crop geometry.
 
 ## Command line
 
@@ -171,7 +167,7 @@ pixtext --model models/PixText-MeanFlow \
   --image input.png --edits edits.json --output output.png --seed 42
 ```
 
-The CLI saves a PNG and a matching JSON metadata file. `python -m pixtext` provides the same command. `--steps` and `--guidance-scale` override the package defaults.
+The command saves a PNG and a JSON metadata file with the same base name. You can also call it with `python -m pixtext`. Set `--steps` and `--guidance-scale` to override the model package defaults.
 
 ## Batch editing
 
@@ -187,19 +183,19 @@ results = pipeline.edit_batch(
 )
 ```
 
-Each image has independent noise and blur streams.
+Each image uses its own noise and blur streams.
 
 ## Inputs and pixel preservation
 
-- Inputs are Pillow images or local image paths, converted to upright RGB using EXIF orientation. Coordinates refer to that upright image.
-- Boxes use original-image pixel coordinates `(x0, y0, x1, y1)` and half-open intervals.
-- Supply one character or a text line per target.
-- Crops align to 16-pixel patches. The edited footprint may extend beyond the requested box. Pixels outside those footprints remain identical to the original RGB image.
-- Arbitrary image dimensions are supported.
-- Targets are processed in input order, up to 12 per pass.
-- The renderer selects the first bundled font covering the entire target string, using PuHuiTi then Go Noto.
+- Pass a Pillow image or a local image path. PixText uses EXIF orientation to turn it upright and converts it to RGB. Box coordinates refer to this upright image.
+- Specify boxes in original-image pixels as `(x0, y0, x1, y1)`, using half-open intervals.
+- Each target can be one character or a line of text.
+- Crops align to 16-pixel patches, so the actual edit area may extend beyond the box. Pixels outside that area remain identical to the original RGB image.
+- Images can have arbitrary dimensions.
+- Targets run in input order, with up to 12 per pass.
+- For each target, the renderer uses the first bundled font that covers the whole string: PuHuiTi, then Go Noto.
 
-Glyph-present and glyph-absent predictions provide guidance on the open interval `(0.1, 1.0)`. At the default guidance setting, four MeanFlow updates use seven model forwards.
+Glyph guidance combines predictions with and without glyphs on the open interval `(0.1, 1.0)`. With the default guidance setting, four MeanFlow updates take seven model forwards.
 
 ## Development
 
@@ -212,7 +208,7 @@ pytest
 python3 scripts/check_secrets.py --tracked
 ```
 
-GPU tests require CUDA and local model packages. Set `PIXTEXT_TEST_MODELS` if packages are stored elsewhere.
+GPU tests need CUDA and local model packages. Set `PIXTEXT_TEST_MODELS` if your packages are in another directory.
 
 ## License
 
