@@ -210,6 +210,22 @@ python3 scripts/check_secrets.py --tracked
 
 GPU tests need CUDA and local model packages. Set `PIXTEXT_TEST_MODELS` if your packages are in another directory.
 
+## Citation
+
+If you use PixText in your research, please cite:
+
+```bibtex
+@misc{liu2026efficientscenetextrefinementpixelspace,
+  title={Efficient Scene-Text Refinement via Pixel-Space Grouped Image Generation},
+  author={Yaoli Liu and Guo-Hua Wang and Yiyang Chen and Qing-Guo Chen and Zhao Xu and Weihua Luo and Yao-Xiang Ding},
+  year={2026},
+  eprint={2610.18284},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
+  url={https://arxiv.org/abs/2610.18284},
+}
+```
+
 ## License
 
 PixText is released under the Apache License 2.0. See [LICENSE](LICENSE).
