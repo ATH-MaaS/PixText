@@ -10,24 +10,22 @@
 
 [English](README.md) | **简体中文**
 
-PixText 在像素空间中修复图像中的局部文字。提供图像、待编辑区域和目标文字后，模型会结合图像上下文生成这些区域，并保持实际编辑范围之外的像素不变。多个目标可以联合生成。
+PixText 用来修复图片中的文字。框出要改的文字，填入目标字词，模型会结合周围图像，在像素空间中一起修复这些区域。实际编辑范围之外的像素保持不变。
 
 | 模型 | 默认采样方式 | 字形引导强度 |
 | --- | --- | --- |
 | PixText-Teacher | 25 步 Euler | 3.3 |
 | PixText-MeanFlow | 4 步区间 Euler | 3.3 |
 
-快速体验默认使用 MeanFlow。每个模型包包含权重、配置、字体和 SHA-256 校验信息。运行 MeanFlow 不需要额外的文本编码器、OCR 模型、VAE 或 Teacher。
+建议先用 MeanFlow。模型包自带权重、配置、字体和 SHA-256 校验信息，运行 MeanFlow 无需额外的文本编码器、OCR 模型、VAE 或 Teacher。
 
 ## 示例
 
-两个内置示例的输入与目标均位于 [`examples/`](examples)。青色方框标出编辑区域，点击图片可查看大图。
+两个示例的原图和目标文字都在 [`examples/`](examples) 中。青色框标出编辑区域，点击图片可查看大图。
 
 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
 | --- | --- | --- |
 | [<img src="examples/pipeline_case/input_boxed.png" width="220" alt="输入图像及编辑区域">](examples/pipeline_case/input_boxed.png) | [<img src="examples/pipeline_case/meanflow_output_boxed.png" width="220" alt="MeanFlow 输出及编辑区域">](examples/pipeline_case/meanflow_output_boxed.png) | [<img src="examples/pipeline_case/teacher_output_boxed.png" width="220" alt="Teacher 输出及编辑区域">](examples/pipeline_case/teacher_output_boxed.png) |
-
-每行并排两个目标，每个目标展示输入、MeanFlow 输出与 Teacher 输出。
 
 | # | Input | MeanFlow · 4 steps | Teacher · 25 steps | # | Input | MeanFlow · 4 steps | Teacher · 25 steps |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -39,13 +37,11 @@ PixText 在像素空间中修复图像中的局部文字。提供图像、待编
 | 6&nbsp;鞭 | <img src="examples/pipeline_case/details/p06_input.png" width="82" alt="鞭 input"> | <img src="examples/pipeline_case/details/p06_meanflow.png" width="82" alt="鞭 meanflow"> | <img src="examples/pipeline_case/details/p06_teacher.png" width="82" alt="鞭 teacher"> | 13&nbsp;畜 | <img src="examples/pipeline_case/details/p13_input.png" width="82" alt="畜 input"> | <img src="examples/pipeline_case/details/p13_meanflow.png" width="82" alt="畜 meanflow"> | <img src="examples/pipeline_case/details/p13_teacher.png" width="82" alt="畜 teacher"> |
 | 7&nbsp;炮 | <img src="examples/pipeline_case/details/p07_input.png" width="82" alt="炮 input"> | <img src="examples/pipeline_case/details/p07_meanflow.png" width="82" alt="炮 meanflow"> | <img src="examples/pipeline_case/details/p07_teacher.png" width="82" alt="炮 teacher"> |  |  |  |  |
 
-**英文说明文字修复。** [`examples/english_case`](examples/english_case) 修复印刷说明文字中的四个受损单词（含一个人名），其余文字保持不变。
+英文示例 [`examples/english_case`](examples/english_case) 修复了一段印刷说明文字中的四个单词，其中一个是拼错的人名，其余文字保持不变。
 
 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
 | --- | --- | --- |
 | [<img src="examples/english_case/input_boxed.png" width="220" alt="说明文字输入及编辑区域">](examples/english_case/input_boxed.png) | [<img src="examples/english_case/meanflow_output_boxed.png" width="220" alt="说明文字 MeanFlow 输出及编辑区域">](examples/english_case/meanflow_output_boxed.png) | [<img src="examples/english_case/teacher_output_boxed.png" width="220" alt="说明文字 Teacher 输出及编辑区域">](examples/english_case/teacher_output_boxed.png) |
-
-每个修复单词一行：输入、MeanFlow 输出与 Teacher 输出。
 
 | 单词 | 输入 | MeanFlow · 4 步 | Teacher · 25 步 |
 | --- | --- | --- | --- |
@@ -54,24 +50,24 @@ PixText 在像素空间中修复图像中的局部文字。提供图像、待编
 | crossbody | <img src="examples/english_case/details/crossbody_input.png" width="180" alt="crossbody input"> | <img src="examples/english_case/details/crossbody_meanflow.png" width="180" alt="crossbody MeanFlow"> | <img src="examples/english_case/details/crossbody_teacher.png" width="180" alt="crossbody Teacher"> |
 | fashionable | <img src="examples/english_case/details/fashionable_input.png" width="180" alt="fashionable input"> | <img src="examples/english_case/details/fashionable_meanflow.png" width="180" alt="fashionable MeanFlow"> | <img src="examples/english_case/details/fashionable_teacher.png" width="180" alt="fashionable Teacher"> |
 
-完成[安装](#安装)后，按照[模型包](#模型包)说明，将完整 MeanFlow 模型包放在 `models/PixText-MeanFlow`，然后运行：
+运行示例前，先[安装 PixText](#安装)，按[模型包](#模型包)说明把完整的 MeanFlow 模型包放到 `models/PixText-MeanFlow`，再执行：
 
 ```bash
 python examples/run_pipeline.py                  # pipeline_case
 python examples/run_pipeline.py --case english   # english_case
 ```
 
-结果保存到 `outputs/<case>/meanflow.png`，同目录的 JSON 文件记录复现信息。使用 Teacher 时准备好 `models/PixText-Teacher` 并加上 `--variant teacher`。可使用 `--model PATH` 指定其他位置的模型包，使用 `--output-dir PATH` 指定输出目录。两个示例均使用随机种子 42。
+脚本把结果保存到 `outputs/<case>/meanflow.png`，并在旁边的 JSON 文件中记录复现信息。要运行 Teacher，准备好 `models/PixText-Teacher`，加上 `--variant teacher` 即可。模型包放在其他位置时，用 `--model PATH` 指定；用 `--output-dir PATH` 更改结果的保存目录。两个示例都使用随机种子 42。
 
-原始分辨率图片：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[说明文字输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。运行 `python examples/annotate_pipeline.py --case <pipeline|english>` 可重新生成带标注的 SVG 与 PNG 图片。
+原图与完整结果：[pipeline 输入](examples/pipeline_case/input.png)、[MeanFlow 输出](examples/pipeline_case/meanflow_output.png)、[Teacher 输出](examples/pipeline_case/teacher_output.png)；[说明文字输入](examples/english_case/input.png)、[MeanFlow 输出](examples/english_case/meanflow_output.png)、[Teacher 输出](examples/english_case/teacher_output.png)。需要重新生成带标注的 SVG 和 PNG 图片时，运行 `python examples/annotate_pipeline.py --case <pipeline|english>`。
 
 ## ComfyUI
 
-直接在图上画框、输入目标字词，并逐区域查看修复前后对比。
+在图片上框出要改的文字，填入目标字词，运行后就能逐个区域查看修复前后的对比。
 
 ### 安装节点
 
-1. 在运行 ComfyUI 的 Python 环境中安装节点：
+1. 在运行 ComfyUI 的 Python 环境中克隆节点并安装依赖：
 
    ```bash
    cd ComfyUI/custom_nodes
@@ -79,8 +75,8 @@ python examples/run_pipeline.py --case english   # english_case
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放入 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`（目录结构见[模型包](#模型包)）。文字修复使用 NVIDIA CUDA GPU。
-3. 重启 ComfyUI 并刷新浏览器，打开 **模板 → PixText**，或将下面的工作流文件拖入画布。
+2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放到 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。目录结构见[模型包](#模型包)。文字修复需要 NVIDIA CUDA GPU。
+3. 重启 ComfyUI，刷新浏览器。在 **模板 → PixText** 中打开示例，或把下面的工作流文件拖入画布。
 
 ### 中文 · 手动画框修复
 
@@ -88,9 +84,9 @@ python examples/run_pipeline.py --case english   # english_case
 
 ![中文文字修复工作流：模型加载、区域编辑、文字修复与前后对比](docs/assets/comfyui-workflow-chinese.jpg)
 
-1. 在 **Load PixText Model** 中选择模型。示例已包含原图和 13 个文字区域；MeanFlow 默认 4 步，Teacher 默认 25 步。
-2. 点击 **Open Region Editor**，画框或调整已有框，输入目标文字，再点击 **Apply regions**。
-3. 点击 **运行**，在 **Compare Regions** 中查看逐区域修复前后对比，点击 **Open comparison** 打开完整画廊。保存工作流即可保留框和目标文字。
+1. 在 **Load PixText Model** 中选好模型。示例自带原图和 13 个文字区域，MeanFlow 默认采样 4 步，Teacher 默认 25 步。
+2. 点击 **Open Region Editor**，画框或调整已有的框，填入目标文字。完成后点击 **Apply regions**。
+3. 点击 **运行**，在 **Compare Regions** 中检查每个区域的修复结果。点击 **Open comparison** 可打开完整画廊。保存工作流时，框和目标文字也会一起保存。
 
 ### 英文 · 自动检测后微调
 
@@ -98,33 +94,32 @@ python examples/run_pipeline.py --case english   # english_case
 
 ![英文文字修复工作流：自动检测单词框、微调目标区域并修复](docs/assets/comfyui-workflow-english.jpg)
 
-在运行 ComfyUI 的 Python 环境中安装单词检测与识别模型：
+先在运行 ComfyUI 的 Python 环境中安装 OCR 依赖：
 
 ```bash
 cd ComfyUI/custom_nodes/PixText
 python -m pip install -r requirements-ocr.txt
-python scripts/download_ocr_models.py --output ../../models/pixtext_ocr
 ```
 
-重启 ComfyUI 后载入英文工作流：
+重启 ComfyUI，打开英文工作流：
 
-1. 点击 **运行**，自动检测单词框并识别文字。
-2. 打开 **Region Editor**，微调框并输入目标词。示例修复 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`，勾选需要修复的区域后点击 **Apply regions**。
-3. 再次点击 **运行**，查看所选单词的修复对比。在 **Detect Words** 中上传自己的图片即可开始新案例。
+1. 在 **Detect Words** 中点击 **Prepare OCR models**，模型文件会下载到运行 ComfyUI 的机器上并完成校验。显示 **Verified** 后，点击 **运行**，检测单词框并识别文字。也可以按 [OCR 模型安装](docs/ocr-models.zh-CN.md) 手动准备文件。
+2. 打开 **Region Editor**，微调框和目标词。示例中的目标词是 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`。勾选要修复的区域，再点击 **Apply regions**。
+3. 再次点击 **运行**，修复所选单词并查看对比结果。换用自己的图片时，在 **Detect Words** 中上传即可。
 
 ## 安装
 
-需要 Python 3.11 或更高版本，以及支持 CUDA 的 GPU。依赖见 [`pyproject.toml`](pyproject.toml)，包括 PyTorch 2.8.0、torchvision 0.23.0 和 Pillow 13.0.0。先安装适合本机 CUDA 环境的 PyTorch 和 torchvision，再安装 PixText：
+PixText 需要 Python 3.11 或更高版本和 CUDA GPU。[`pyproject.toml`](pyproject.toml) 列出了依赖，包括 PyTorch 2.8.0、torchvision 0.23.0 和 Pillow 11.3.0 或更高版本。先为本机 CUDA 环境安装 PyTorch 和 torchvision，再安装 PixText：
 
 ```bash
 pip install -e .
 ```
 
-Pillow 需要支持 RAQM，系统需要提供 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。字体从模型包加载，无需单独安装到系统。
+PixText 使用支持 RAQM 的 Pillow 对目标文字排版，渲染出提供给模型的字形条件图。系统中还需要 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。PixText 直接使用模型包里的字体，不用另外安装系统字体。
 
 ## 模型包
 
-模型权重可从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载。运行示例前，需要准备完整的本地模型包，目录结构如下：
+从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包。运行 Python 示例时，按以下目录放置：
 
 ```text
 models/
@@ -140,7 +135,7 @@ models/
       GoNotoCJKCore-v7.0.ttf
 ```
 
-Teacher 使用相同的模型包结构。[`model_index.json`](model_index.json) 列出了模型标识和权重校验值。`from_pretrained` 从本地目录加载模型，检查清单中列出的权重、配置和字体。
+Teacher 的目录结构相同。[`model_index.json`](model_index.json) 中列有模型标识和权重校验值。`from_pretrained` 从本地目录加载模型，并检查清单中的权重、配置和字体。
 
 ## Python 接口
 
@@ -156,7 +151,7 @@ result = pipeline.edit(
 result.image.save("output.png")
 ```
 
-加载 Teacher 时，将路径替换为 `models/PixText-Teacher`。两种模型可以在同一进程中使用。返回结果包含 `image` 和 `metadata`，记录模型标识、随机种子、样本标识、采样设置及裁剪区域。
+使用 Teacher 时，把模型路径换成 `models/PixText-Teacher`。两种模型可以在同一个进程里使用。返回结果中的 `image` 是修复后的图片，`metadata` 记录模型标识、随机种子、样本标识、采样设置和裁剪区域。
 
 ## 命令行
 
@@ -171,7 +166,7 @@ pixtext --model models/PixText-MeanFlow \
   --image input.png --edits edits.json --output output.png --seed 42
 ```
 
-命令行会保存 PNG 图片及同名 JSON 元数据文件，也可以使用 `python -m pixtext` 调用。`--steps` 和 `--guidance-scale` 可覆盖模型包的默认设置。
+命令会保存 PNG 图片和同名 JSON 元数据文件，也可以用 `python -m pixtext` 调用。通过 `--steps` 和 `--guidance-scale` 更改模型包的默认设置。
 
 ## 批量编辑
 
@@ -191,15 +186,15 @@ results = pipeline.edit_batch(
 
 ## 输入与像素保留规则
 
-- 输入可以是 Pillow 图片或本地图片路径，会根据 EXIF 方向转为正向 RGB。编辑坐标以转正后的图片为准。
-- 编辑框使用原图像素坐标 `(x0, y0, x1, y1)`，采用左闭右开的区间。
-- 每个目标可以是一个字符或一行文字。
-- 裁剪区域按 16 像素的 patch 对齐，因此实际编辑范围可能超出指定框。实际编辑范围之外的像素与原始 RGB 图片完全一致。
+- 输入 Pillow 图片或本地图片路径。PixText 按 EXIF 方向把图片转正，再转换为 RGB，编辑坐标以转正后的图片为准。
+- 用原图像素坐标 `(x0, y0, x1, y1)` 指定编辑框，区间左闭右开。
+- 一个目标可以是单个字符，也可以是一行文字。
+- 裁剪区域按 16 像素的 patch 对齐，实际编辑范围可能超出指定框。范围以外的像素与原始 RGB 图片完全一致。
 - 支持任意图片尺寸。
-- 按输入顺序处理目标，每轮最多 12 个。
-- 字体按普惠体、Go Noto 的顺序选择，要求单个字体覆盖整条目标文字。
+- 目标按输入顺序处理，每轮最多 12 个。
+- 每个目标依次尝试普惠体和 Go Noto，使用第一个能覆盖整条文字的字体。
 
-字形引导在开区间 `(0.1, 1.0)` 内组合有字形和无字形条件的预测。默认引导设置下，MeanFlow 的 4 次更新需要 7 次模型前向计算。
+字形引导在开区间 `(0.1, 1.0)` 内组合有字形和无字形条件的预测。使用默认引导设置时，MeanFlow 的 4 次更新需要 7 次模型前向计算。
 
 ## 开发
 
@@ -212,7 +207,23 @@ pytest
 python3 scripts/check_secrets.py --tracked
 ```
 
-GPU 测试需要 CUDA 和本地模型包。模型包位于其他目录时，可设置 `PIXTEXT_TEST_MODELS`。
+GPU 测试需要 CUDA 和本地模型包。如果模型包放在其他目录，用 `PIXTEXT_TEST_MODELS` 指定。
+
+## 引用
+
+如果在研究中使用 PixText，请引用：
+
+```bibtex
+@misc{liu2026efficientscenetextrefinementpixelspace,
+  title={Efficient Scene-Text Refinement via Pixel-Space Grouped Image Generation},
+  author={Yaoli Liu and Guo-Hua Wang and Yiyang Chen and Qing-Guo Chen and Zhao Xu and Weihua Luo and Yao-Xiang Ding},
+  year={2026},
+  eprint={2610.18284},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
+  url={https://arxiv.org/abs/2610.18284},
+}
+```
 
 ## 许可
 

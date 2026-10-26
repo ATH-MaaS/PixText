@@ -1,5 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
+import { setupOCR } from "./ocr_setup.js";
 
 const stylesheet = document.createElement("link");
 stylesheet.rel = "stylesheet";
@@ -480,6 +481,9 @@ app.registerExtension({
     if (nodeData.name === "PixTextRegionEditor") {
       const previous = nodeType.prototype.onNodeCreated;
       nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setup(this); return result; };
+    } else if (nodeData.name === "PixTextAutoDetect") {
+      const previous = nodeType.prototype.onNodeCreated;
+      nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setupOCR(this); return result; };
     } else if (nodeData.name === "PixTextRefine") {
       const previous = nodeType.prototype.onNodeCreated;
       nodeType.prototype.onNodeCreated = function (...args) { const result = previous?.apply(this, args); setupRefiner(this); return result; };
