@@ -116,7 +116,7 @@ PixText requires Python 3.11 or newer and a CUDA GPU. [`pyproject.toml`](pyproje
 pip install -e .
 ```
 
-Pillow needs RAQM support, and the system needs HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). PixText loads fonts from the model package, so you do not need to install them as system fonts.
+PixText uses Pillow with RAQM to lay out target text and render the glyph images supplied to the model. The system also needs HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). PixText loads fonts from the model package, so you do not need to install them as system fonts.
 
 ## Model packages
 

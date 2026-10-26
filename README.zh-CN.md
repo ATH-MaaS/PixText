@@ -115,7 +115,7 @@ PixText 需要 Python 3.11 或更高版本和 CUDA GPU。[`pyproject.toml`](pypr
 pip install -e .
 ```
 
-Pillow 需要支持 RAQM，系统中还需要 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。PixText 直接使用模型包里的字体，不用另外安装系统字体。
+PixText 使用支持 RAQM 的 Pillow 对目标文字排版，渲染出提供给模型的字形条件图。系统中还需要 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。PixText 直接使用模型包里的字体，不用另外安装系统字体。
 
 ## 模型包
 
