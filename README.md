@@ -76,8 +76,8 @@ Draw boxes around the text to fix, enter the correct words, and view each repair
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) and place it in `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. The loader also finds these package folders directly under `ComfyUI/models/`. See [Model packages](#model-packages) for the directory layout. Refinement requires an NVIDIA CUDA GPU.
-3. Restart ComfyUI and refresh your browser. Open **Templates → PixText**, or drag one of the workflow files below onto the canvas.
+2. Restart ComfyUI and refresh your browser. Open **Templates → PixText**, or drag one of the workflow files below onto the canvas. If its weights are missing, ComfyUI shows the model and download link. Configuration and fonts come with the nodes. Refinement requires an NVIDIA CUDA GPU.
+3. Use **Download** in the missing-model dialog. Desktop handles the download; in a browser or Portable installation, save the file as `ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors` or `ComfyUI/models/diffusion_models/PixText-Teacher.safetensors`. When connected to a remote server, place it on that server. Refresh the model list after saving. Existing complete model packages in `ComfyUI/models/pixtext/` or `ComfyUI/models/` also work.
 
 ### Chinese · Draw and refine
 
@@ -104,7 +104,7 @@ python -m pip install -r requirements-ocr.txt
 
 Restart ComfyUI, then open the English workflow:
 
-1. In **Detect Words**, click **Prepare OCR models** to download and verify the files on your ComfyUI server. When the status reads **Verified**, click **Run** to detect word boxes and read their text. [OCR setup](docs/ocr-models.md) covers manual installation.
+1. Follow the **OCR model downloads** note on the canvas to download the three OCR files and save them in the listed folders. Then click **Run** to detect word boxes and read their text. The same links and a local checksum command are in [OCR setup](docs/ocr-models.md).
 2. Open **Region Editor** and adjust the boxes and target words. The example targets are `Nayeon`, `Nicola`, `crossbody` and `fashionable`. Enable the regions you want to repair, then click **Apply regions**.
 3. Click **Run** again to repair the selected words and compare the results. To try another image, upload it in **Detect Words**.
 
@@ -116,7 +116,7 @@ PixText requires Python 3.11 or newer and a CUDA GPU. [`pyproject.toml`](pyproje
 pip install -e .
 ```
 
-PixText uses Pillow with RAQM to lay out target text and render the glyph images supplied to the model. The system also needs HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). PixText loads fonts from the model package, so you do not need to install them as system fonts.
+PixText uses Pillow with RAQM to lay out target text and render the glyph images supplied to the model. The system also needs HarfBuzz (`libharfbuzz0` on Debian/Ubuntu). Fonts are bundled with the ComfyUI nodes and Python model packages; you do not need to install them as system fonts.
 
 ## Model packages
 

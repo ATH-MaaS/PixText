@@ -33,13 +33,17 @@ def package_file(root: Path, name: str) -> Path:
     return path
 
 
-def read_package(path: str | Path) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
+def read_package(
+    path: str | Path, *, weights_path: str | Path | None = None
+) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
     root = Path(path).expanduser().resolve()
     manifest = json.loads((root / "manifest.json").read_text())
     if manifest.get("format_version") != 1 or not isinstance(manifest.get("files"), dict):
         raise ValueError("Unsupported or invalid PixText manifest")
     for name, expected in manifest["files"].items():
         file = package_file(root, name)
+        if name == "model.safetensors" and weights_path is not None:
+            file = Path(weights_path).expanduser().resolve()
         if not file.is_file():
             raise FileNotFoundError(f"Model package is missing bundled file: {name}")
         if file_sha256(file) != expected:

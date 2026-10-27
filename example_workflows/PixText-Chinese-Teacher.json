@@ -1,5 +1,5 @@
 {
-  "last_node_id": 5,
+  "last_node_id": 6,
   "last_link_id": 7,
   "nodes": [
     {
@@ -28,10 +28,19 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "PixTextModelLoader"
+        "Node name for S&R": "PixTextModelLoader",
+        "models": [
+          {
+            "name": "PixText-Teacher.safetensors",
+            "url": "https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-Teacher/model.safetensors",
+            "directory": "diffusion_models",
+            "hash": "4717506a7934334fd04755e5d5f22f398fd31c170cc6f3ea76b48cd99458ec28",
+            "hash_type": "SHA256"
+          }
+        ]
       },
       "widgets_values": [
-        "PixText-Teacher",
+        "PixText-Teacher.safetensors",
         "bfloat16"
       ]
     },
@@ -230,6 +239,30 @@
       "widgets_values": [
         6
       ]
+    },
+    {
+      "id": 6,
+      "type": "MarkdownNote",
+      "title": "PixText model download",
+      "pos": [
+        80,
+        -200
+      ],
+      "size": [
+        720,
+        290
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# PixText 模型下载\n\n打开工作流后，ComfyUI 会提示缺失的模型。点击 **Download** 下载当前模型。\n\nDesktop 可处理保存；Portable 或浏览器请将文件保存为 `ComfyUI/models/diffusion_models/PixText-Teacher.safetensors`，再刷新模型列表。如果浏览器保存成 `model.safetensors`，请改为上述文件名。连接远程 ComfyUI 时，文件要放在服务器上。\n\n配置和字体随节点提供，原有的完整模型包也可以继续使用。\n\n[下载当前权重](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-Teacher/model.safetensors) · [全部 PixText 模型](https://huggingface.co/ATH-MaaS/PixText)"
+      ],
+      "color": "#28443f",
+      "bgcolor": "#18262d"
     }
   ],
   "links": [
@@ -294,10 +327,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8,
+      "scale": 0.48,
       "offset": [
-        15,
-        130
+        200,
+        520
       ]
     }
   },

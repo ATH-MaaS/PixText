@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from comfyui.model_paths import discover_packages
+from comfyui.model_paths import discover_models, discover_packages
 
 
 class ModelDiscoveryTests(unittest.TestCase):
@@ -65,3 +65,32 @@ class ModelDiscoveryTests(unittest.TestCase):
         self.assertEqual(self.discover(), {})
         package = self.package(self.models, "PixText-Teacher")
         self.assertEqual(self.discover(), {"PixText-Teacher": package})
+
+    def test_standalone_weights_have_native_names_and_legacy_api_aliases(self):
+        self.registered.mkdir(parents=True)
+        expected = {}
+        for name in ("PixText-Teacher", "PixText-MeanFlow"):
+            path = self.registered / (name + ".safetensors")
+            path.touch()
+            expected[path.name] = path
+            expected[name] = path
+        self.assertEqual(discover_models([self.registered], self.models), expected)
+
+    def test_complete_packages_also_satisfy_native_workflow_names(self):
+        path = self.package(self.models, "PixText-MeanFlow")
+        choices = discover_models([self.registered], self.models)
+        self.assertEqual(choices["PixText-MeanFlow.safetensors"], path)
+        self.assertEqual(choices["PixText-MeanFlow"], path)
+
+    def test_registered_standalone_weights_precede_fallback_packages(self):
+        self.package(self.models, "PixText-Teacher")
+        self.registered.mkdir()
+        path = self.registered / "PixText-Teacher.safetensors"
+        path.touch()
+        choices = discover_models([self.registered], self.models)
+        self.assertEqual(choices["PixText-Teacher.safetensors"], path)
+
+    def test_unrecognized_standalone_weights_are_not_offered(self):
+        self.models.mkdir(parents=True)
+        (self.models / "some-other-model.safetensors").touch()
+        self.assertEqual(discover_models([self.registered], self.models), {})

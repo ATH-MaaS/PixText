@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "model_id": "PixText-Teacher",
+  "variant": "teacher",
+  "weights": "ema",
+  "files": {
+    "config.json": "fee3341922b8cd45ec6aaa95449456139d8ec13f8352299c045de44c388c0662",
+    "fonts/AlibabaPuHuiTi-3-55-Regular.ttf": "be33bc8d45ced30fa5c542f6f056565baf85003d4e079522110d76016f8a04e2",
+    "fonts/GoNotoCJKCore-v7.0.ttf": "bfe18b47612e58ff28b568f32b55e35fde4505d6137581bf11d2363e257e2ad4",
+    "fonts/OFL-GoNoto.txt": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "inference_config.json": "11ebfb69ad6cb70fa09372827c05e79bb6dc94c377ad45804d5c6c9da434ef14",
+    "model.safetensors": "4717506a7934334fd04755e5d5f22f398fd31c170cc6f3ea76b48cd99458ec28",
+    "fonts/README.md": "324d54226d3a8db749b06695255fa5e6548122ba67ff5f97a9f300b761c04fe6"
+  },
+  "code_version": "0.1.0"
+}

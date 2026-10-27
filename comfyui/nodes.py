@@ -7,7 +7,6 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlsplit
 
 import folder_paths
 import numpy as np
@@ -24,9 +23,8 @@ from server import PromptServer
 from pixtext import PixTextPipeline
 
 from .comparison import compare_regions
-from .model_paths import discover_packages
+from .model_paths import MODEL_NAMES, discover_models
 from .ocr import detect_words, model_identity
-from .ocr_models import OCRModelPreparation
 from .regions import parse_regions
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,11 +36,13 @@ TARGETS = io.Custom("PIXTEXT_TARGETS")
 COLORS = ("#5eead4", "#fbbf24", "#a5b4fc", "#fb7185", "#7dd3fc", "#d8b4fe")
 folder_paths.add_model_folder_path("pixtext", str(Path(folder_paths.models_dir) / "pixtext"))
 comfy_api_sync = ComfyAPISync()
-ocr_preparation = OCRModelPreparation(Path(folder_paths.models_dir) / "pixtext_ocr")
 
 
 def packages() -> dict[str, Path]:
-    return discover_packages(folder_paths.get_folder_paths("pixtext"), folder_paths.models_dir)
+    roots = folder_paths.get_folder_paths("pixtext") + folder_paths.get_folder_paths(
+        "diffusion_models"
+    )
+    return discover_models(roots, folder_paths.models_dir)
 
 
 def file_fingerprint(path: Path) -> str:
@@ -96,8 +96,13 @@ class ModelHandle:
         if device.type != "cuda":
             raise RuntimeError("PixText requires an NVIDIA CUDA GPU with FlexAttention support")
         if self.pipeline is None:
+            standalone = self.path.is_file()
+            package = ROOT / "comfyui/model_assets" / self.path.stem if standalone else self.path
             self.pipeline = PixTextPipeline.from_pretrained(
-                self.path, device="cpu", dtype=self.dtype
+                package,
+                device="cpu",
+                dtype=self.dtype,
+                weights_path=self.path if standalone else None,
             )
             self.patcher = ModelPatcher(self.pipeline.model, device, torch.device("cpu"))
         # Native PixText modules do not implement ComfyUI's partial weight casting.
@@ -113,12 +118,12 @@ class PixTextModelLoader(io.ComfyNode):
             node_id="PixTextModelLoader",
             display_name="Load PixText Model",
             category="PixText",
-            description="Load a complete MeanFlow or Teacher package from models/pixtext or models.",
+            description="Load PixText weights from models/diffusion_models or models/pixtext. Workflow model links use ComfyUI's native download dialog. Complete model packages also work.",
             inputs=[
                 io.Combo.Input(
                     "model_name",
                     options=list(packages()) or ["(install a model package)"],
-                    tooltip="Complete package folder, including configuration and fonts.",
+                    tooltip="Select PixText-MeanFlow.safetensors or PixText-Teacher.safetensors. Configuration and fonts are bundled with the node.",
                 ),
                 io.Combo.Input(
                     "precision", options=["bfloat16", "float32"], default="bfloat16", advanced=True
@@ -132,9 +137,9 @@ class PixTextModelLoader(io.ComfyNode):
         available = packages()
         if model_name not in available:
             raise ValueError(
-                "Place a complete PixText package (manifest.json, model.safetensors, "
-                "configuration and fonts) in ComfyUI/models/pixtext/<package> or "
-                "ComfyUI/models/<package>, then refresh the model list."
+                "Use the workflow's missing-model download links, save "
+                "PixText-MeanFlow.safetensors or PixText-Teacher.safetensors in "
+                "ComfyUI/models/diffusion_models, then refresh. Complete model packages also work."
             )
         dtype = {"bfloat16": torch.bfloat16, "float32": torch.float32}[precision]
         return io.NodeOutput(ModelHandle(available[model_name], dtype))
@@ -144,11 +149,10 @@ class PixTextModelLoader(io.ComfyNode):
         path = packages().get(model_name)
         if path is None:
             return model_name
-        return tuple(
-            (p.name, p.stat().st_size, p.stat().st_mtime_ns)
-            for p in sorted(path.rglob("*"))
-            if p.is_file()
-        )
+        files = [path] if path.is_file() else sorted(path.rglob("*"))
+        if path.is_file() and path.stem in MODEL_NAMES:
+            files += sorted((ROOT / "comfyui/model_assets" / path.stem).rglob("*"))
+        return tuple((p.name, p.stat().st_size, p.stat().st_mtime_ns) for p in files if p.is_file())
 
 
 class PixTextAutoDetect(io.ComfyNode):
@@ -479,22 +483,6 @@ class PixTextExtension(ComfyExtension):
 @PromptServer.instance.routes.get("/pixtext/example/chinese")
 async def chinese_example(request):
     return web.FileResponse(ROOT / "examples/pipeline_case/input.png")
-
-
-@PromptServer.instance.routes.get("/pixtext/ocr/models")
-async def ocr_model_status(request):
-    return web.json_response(ocr_preparation.status(), headers={"Cache-Control": "no-store"})
-
-
-@PromptServer.instance.routes.post("/pixtext/ocr/models/prepare")
-async def prepare_ocr_models(request):
-    origin = request.headers.get("Origin")
-    if request.headers.get("Sec-Fetch-Site") == "cross-site" or (
-        origin and urlsplit(origin).netloc != request.host
-    ):
-        raise web.HTTPForbidden(text="Open OCR setup from this ComfyUI instance")
-    # No client-supplied URLs, paths or shell commands are accepted.
-    return web.json_response(ocr_preparation.prepare(), headers={"Cache-Control": "no-store"})
 
 
 @PromptServer.instance.routes.get("/pixtext/example/chinese/regions")
