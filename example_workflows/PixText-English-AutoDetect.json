@@ -305,11 +305,11 @@
       "title": "PixText model download",
       "pos": [
         80,
-        -200
+        -380
       ],
       "size": [
-        720,
-        290
+        800,
+        470
       ],
       "flags": {},
       "order": 0,
@@ -318,7 +318,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "# PixText model download\n\nOpen this workflow to see ComfyUI's missing-model download prompt. Choose **Download** for the selected model.\n\nDesktop can place the weights for you. With Portable or a browser, save the file as `ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors`, then refresh the model list. Rename `model.safetensors` if your browser uses that name. Remote ComfyUI needs the file on the server.\n\nConfiguration and fonts are included with the nodes. Existing complete model packages still work.\n\n[Download selected weights](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [All PixText models](https://huggingface.co/ATH-MaaS/PixText)"
+        "# 模型下载 / Model download\n\n打开工作流后，ComfyUI 会提示缺少的权重。点击 Download 下载当前模型。\nComfyUI shows any missing weights when you open the workflow. Click Download for the selected model.\n\nDesktop 会处理下载和保存。使用 Portable 或浏览器时，请按下面的路径保存，然后刷新模型列表。\nDesktop handles the download. In Portable or a browser, save the file here, then refresh the model list:\n\n`ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors`\n\n如果浏览器把文件保存成 `model.safetensors`，请改成上面的文件名。连接远程 ComfyUI 时，文件要放在服务器上。\nRename the file if your browser uses its original name. For remote ComfyUI, put it on the server.\n\n配置和字体随节点提供，不用另下。原来的完整模型包也能继续使用。\nConfiguration and fonts come with the nodes. Existing complete model packages still work.\n\n[下载当前权重 / Download selected weights](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [全部模型 / All models](https://huggingface.co/ATH-MaaS/PixText)"
       ],
       "color": "#28443f",
       "bgcolor": "#18262d"
@@ -328,12 +328,12 @@
       "type": "MarkdownNote",
       "title": "OCR model downloads",
       "pos": [
-        850,
-        -200
+        940,
+        -380
       ],
       "size": [
         940,
-        290
+        470
       ],
       "flags": {},
       "order": 0,
@@ -342,7 +342,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "# OCR model downloads · one-time setup\n\nDownload these three files before running Detect Words. Save them on the machine running ComfyUI.\n\n1. [CRAFT ZIP](https://github.com/JaidedAI/EasyOCR/releases/download/pre-v1.1.6/craft_mlt_25k.zip): extract **craft_mlt_25k.pth** into `ComfyUI/models/pixtext_ocr/`.\n2. [PP-OCRv6 weights · inference.onnx](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx/resolve/50c7eacafc52fa7bcf4194e8cd08e46f8558504b/inference.onnx?download=true)\n3. [PP-OCRv6 dictionary · inference.yml](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx/resolve/50c7eacafc52fa7bcf4194e8cd08e46f8558504b/inference.yml?download=true)\n\nSave both PP-OCRv6 files in `ComfyUI/models/pixtext_ocr/PP-OCRv6_medium_rec_onnx/`.\n\nFrom the PixText node folder, install dependencies with ComfyUI's Python: `python -m pip install -r requirements-ocr.txt`, then restart. After saving the models, click **Run** and review the detected boxes."
+        "# OCR 模型下载 / OCR model downloads\n\n先下载下面三个文件，放到运行 ComfyUI 的电脑上。\nDownload these three files to the computer running ComfyUI.\n\n1. [CRAFT 检测模型 / Detection model (ZIP)](https://github.com/JaidedAI/EasyOCR/releases/download/pre-v1.1.6/craft_mlt_25k.zip)\n   解压 ZIP，取出 craft_mlt_25k.pth。Extract the ZIP and keep craft_mlt_25k.pth.\n   保存目录 / Save in: `ComfyUI/models/pixtext_ocr/`\n2. [PP-OCRv6 识别权重 / Recognition weights](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx/resolve/50c7eacafc52fa7bcf4194e8cd08e46f8558504b/inference.onnx?download=true)\n3. [PP-OCRv6 字典配置 / Dictionary configuration](https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_rec_onnx/resolve/50c7eacafc52fa7bcf4194e8cd08e46f8558504b/inference.yml?download=true)\n\n后两个文件放在同一目录。Save both PP-OCRv6 files in:\n`ComfyUI/models/pixtext_ocr/PP-OCRv6_medium_rec_onnx/`\n\n在 PixText 节点目录中，用运行 ComfyUI 的 Python 安装依赖，完成后重启。\nFrom the PixText node folder, install dependencies with ComfyUI's Python, then restart:\n`python -m pip install -r requirements-ocr.txt`\n\n文件放好后点击 Run，检查识别出的框，再修改目标文字。\nOnce the files are in place, click Run, review the boxes and enter your corrections."
       ],
       "color": "#35465a",
       "bgcolor": "#18262d"

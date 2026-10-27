@@ -91,6 +91,10 @@ def test_workflows_declare_the_selected_weight_and_complete_ocr_download_note():
             + variant
             + "/model.safetensors"
         )
+        notes = [node for node in workflow["nodes"] if node["type"] == "MarkdownNote"]
+        for note in notes:
+            assert "下载" in note["widgets_values"][0]
+            assert "Download" in note["widgets_values"][0]
         assets = ROOT / "comfyui/model_assets" / variant
         manifest = json.loads((assets / "manifest.json").read_text())
         assert manifest["files"]["model.safetensors"] == expected[variant]

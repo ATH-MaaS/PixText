@@ -246,11 +246,11 @@
       "title": "PixText model download",
       "pos": [
         80,
-        -200
+        -380
       ],
       "size": [
-        720,
-        290
+        800,
+        470
       ],
       "flags": {},
       "order": 0,
@@ -259,7 +259,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "# PixText 模型下载\n\n打开工作流后，ComfyUI 会提示缺失的模型。点击 **Download** 下载当前模型。\n\nDesktop 可处理保存；Portable 或浏览器请将文件保存为 `ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors`，再刷新模型列表。如果浏览器保存成 `model.safetensors`，请改为上述文件名。连接远程 ComfyUI 时，文件要放在服务器上。\n\n配置和字体随节点提供，原有的完整模型包也可以继续使用。\n\n[下载当前权重](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [全部 PixText 模型](https://huggingface.co/ATH-MaaS/PixText)"
+        "# 模型下载 / Model download\n\n打开工作流后，ComfyUI 会提示缺少的权重。点击 Download 下载当前模型。\nComfyUI shows any missing weights when you open the workflow. Click Download for the selected model.\n\nDesktop 会处理下载和保存。使用 Portable 或浏览器时，请按下面的路径保存，然后刷新模型列表。\nDesktop handles the download. In Portable or a browser, save the file here, then refresh the model list:\n\n`ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors`\n\n如果浏览器把文件保存成 `model.safetensors`，请改成上面的文件名。连接远程 ComfyUI 时，文件要放在服务器上。\nRename the file if your browser uses its original name. For remote ComfyUI, put it on the server.\n\n配置和字体随节点提供，不用另下。原来的完整模型包也能继续使用。\nConfiguration and fonts come with the nodes. Existing complete model packages still work.\n\n[下载当前权重 / Download selected weights](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [全部模型 / All models](https://huggingface.co/ATH-MaaS/PixText)"
       ],
       "color": "#28443f",
       "bgcolor": "#18262d"
