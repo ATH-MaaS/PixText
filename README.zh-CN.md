@@ -75,7 +75,7 @@ python examples/run_pipeline.py --case english   # english_case
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放到 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。目录结构见[模型包](#模型包)。文字修复需要 NVIDIA CUDA GPU。
+2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放到 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。这两个模型包目录也可以直接放在 `ComfyUI/models/` 下，加载节点同样可以找到。目录结构见[模型包](#模型包)。文字修复需要 NVIDIA CUDA GPU。
 3. 重启 ComfyUI，刷新浏览器。在 **模板 → PixText** 中打开示例，或把下面的工作流文件拖入画布。
 
 ### 中文 · 手动画框修复

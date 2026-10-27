@@ -24,6 +24,7 @@ from server import PromptServer
 from pixtext import PixTextPipeline
 
 from .comparison import compare_regions
+from .model_paths import discover_packages
 from .ocr import detect_words, model_identity
 from .ocr_models import OCRModelPreparation
 from .regions import parse_regions
@@ -41,14 +42,7 @@ ocr_preparation = OCRModelPreparation(Path(folder_paths.models_dir) / "pixtext_o
 
 
 def packages() -> dict[str, Path]:
-    found = {}
-    for directory in folder_paths.get_folder_paths("pixtext"):
-        root = Path(directory)
-        if root.is_dir():
-            for manifest in sorted(root.glob("*/manifest.json")):
-                if (manifest.parent / "model.safetensors").is_file():
-                    found.setdefault(manifest.parent.name, manifest.parent)
-    return found
+    return discover_packages(folder_paths.get_folder_paths("pixtext"), folder_paths.models_dir)
 
 
 def file_fingerprint(path: Path) -> str:
@@ -119,7 +113,7 @@ class PixTextModelLoader(io.ComfyNode):
             node_id="PixTextModelLoader",
             display_name="Load PixText Model",
             category="PixText",
-            description="Load a complete MeanFlow or Teacher package from models/pixtext.",
+            description="Load a complete MeanFlow or Teacher package from models/pixtext or models.",
             inputs=[
                 io.Combo.Input(
                     "model_name",
@@ -135,12 +129,15 @@ class PixTextModelLoader(io.ComfyNode):
 
     @classmethod
     def execute(cls, model_name, precision):
-        if model_name not in packages():
+        available = packages()
+        if model_name not in available:
             raise ValueError(
-                "Place a complete PixText package in ComfyUI/models/pixtext and refresh."
+                "Place a complete PixText package (manifest.json, model.safetensors, "
+                "configuration and fonts) in ComfyUI/models/pixtext/<package> or "
+                "ComfyUI/models/<package>, then refresh the model list."
             )
         dtype = {"bfloat16": torch.bfloat16, "float32": torch.float32}[precision]
-        return io.NodeOutput(ModelHandle(packages()[model_name], dtype))
+        return io.NodeOutput(ModelHandle(available[model_name], dtype))
 
     @classmethod
     def fingerprint_inputs(cls, model_name, precision):

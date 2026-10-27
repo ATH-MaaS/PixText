@@ -76,7 +76,7 @@ Draw boxes around the text to fix, enter the correct words, and view each repair
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) and place it in `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. See [Model packages](#model-packages) for the directory layout. Refinement requires an NVIDIA CUDA GPU.
+2. Download a complete model package from [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) and place it in `ComfyUI/models/pixtext/PixText-MeanFlow/` or `ComfyUI/models/pixtext/PixText-Teacher/`. The loader also finds these package folders directly under `ComfyUI/models/`. See [Model packages](#model-packages) for the directory layout. Refinement requires an NVIDIA CUDA GPU.
 3. Restart ComfyUI and refresh your browser. Open **Templates → PixText**, or drag one of the workflow files below onto the canvas.
 
 ### Chinese · Draw and refine

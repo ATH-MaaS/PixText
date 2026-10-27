@@ -1,0 +1,21 @@
+"""Discover local PixText packages without scanning unrelated model subtrees."""
+
+from __future__ import annotations
+
+from collections.abc import Iterable
+from pathlib import Path
+
+
+def discover_packages(
+    registered_roots: Iterable[str | Path], models_dir: str | Path
+) -> dict[str, Path]:
+    """Prefer registered PixText roots, then check ComfyUI's models directory."""
+    found: dict[str, Path] = {}
+    for directory in (*registered_roots, models_dir):
+        root = Path(directory)
+        if not root.is_dir():
+            continue
+        for manifest in sorted(root.glob("*/manifest.json")):
+            if (manifest.parent / "model.safetensors").is_file():
+                found.setdefault(manifest.parent.name, manifest.parent)
+    return found
