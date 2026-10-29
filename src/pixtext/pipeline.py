@@ -78,9 +78,15 @@ class PixTextPipeline:
 
     @classmethod
     def from_pretrained(
-        cls, path: str | Path, *, device: str = "cuda", dtype: torch.dtype = torch.bfloat16
+        cls,
+        path: str | Path,
+        *,
+        device: str = "cuda",
+        dtype: torch.dtype = torch.bfloat16,
+        weights_path: str | Path | None = None,
     ) -> PixTextPipeline:
-        root, config, inference, manifest = read_package(path)
+        weights = Path(weights_path).expanduser().resolve() if weights_path is not None else None
+        root, config, inference, manifest = read_package(path, weights_path=weights)
         glyph = inference["glyph"]
         renderer = CanonicalItemGlyphRenderer(
             font_path=package_file(root, glyph["font_path"]),
@@ -97,7 +103,9 @@ class PixTextPipeline:
         with torch.device("meta"):
             model = GroupJiT(**config["model"])
         model.load_state_dict(
-            load_file(str(root / "model.safetensors"), device="cpu"), strict=True, assign=True
+            load_file(str(weights or root / "model.safetensors"), device="cpu"),
+            strict=True,
+            assign=True,
         )
         model = model.to(device=target, dtype=dtype)
         return cls(

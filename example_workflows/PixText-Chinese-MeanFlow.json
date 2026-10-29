@@ -1,5 +1,5 @@
 {
-  "last_node_id": 5,
+  "last_node_id": 6,
   "last_link_id": 7,
   "nodes": [
     {
@@ -28,10 +28,19 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "PixTextModelLoader"
+        "Node name for S&R": "PixTextModelLoader",
+        "models": [
+          {
+            "name": "PixText-MeanFlow.safetensors",
+            "url": "https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors",
+            "directory": "diffusion_models",
+            "hash": "d622bb403165c17853bcb9050e6df97330617df7d22516840f2be719240a08ea",
+            "hash_type": "SHA256"
+          }
+        ]
       },
       "widgets_values": [
-        "PixText-MeanFlow",
+        "PixText-MeanFlow.safetensors",
         "bfloat16"
       ]
     },
@@ -230,6 +239,30 @@
       "widgets_values": [
         6
       ]
+    },
+    {
+      "id": 6,
+      "type": "MarkdownNote",
+      "title": "PixText model download",
+      "pos": [
+        80,
+        -590
+      ],
+      "size": [
+        800,
+        680
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## 模型下载\n\n打开工作流后，ComfyUI 会提示缺少的权重。点击 Download 下载当前模型。\n\nDesktop 会处理下载和保存。使用 Portable 或浏览器时，请按下面的路径保存，然后刷新模型列表：\n\n```text\nComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors\n```\n\n如果浏览器把文件保存成 `model.safetensors`，请改成上面的文件名。连接远程 ComfyUI 时，文件要放在服务器上。\n\n配置和字体随节点提供，不用另下。原来的完整模型包也能继续使用。\n\n[下载当前权重](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [全部模型](https://huggingface.co/ATH-MaaS/PixText)\n\n## Model download\n\nComfyUI shows any missing weights when you open the workflow. Click Download for the selected model.\n\nDesktop handles the download. In Portable or a browser, save the file here, then refresh the model list:\n\n```text\nComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors\n```\n\nRename the file if your browser saves it as `model.safetensors`. For remote ComfyUI, put it on the server.\n\nConfiguration and fonts come with the nodes. Existing complete model packages still work.\n\n[Download selected weights](https://huggingface.co/ATH-MaaS/PixText/resolve/main/models/PixText-MeanFlow/model.safetensors) · [All models](https://huggingface.co/ATH-MaaS/PixText)"
+      ],
+      "color": "#28443f",
+      "bgcolor": "#18262d"
     }
   ],
   "links": [
@@ -294,10 +327,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8,
+      "scale": 0.48,
       "offset": [
-        15,
-        130
+        200,
+        740
       ]
     }
   },

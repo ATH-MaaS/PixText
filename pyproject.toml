@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixtext"
-version = "0.1.4"
+version = "0.1.6"
 description = "PixText scene-text refinement with a visual region editor, local word detection, and before/after comparison"
 readme = "README.md"
 license = "Apache-2.0"

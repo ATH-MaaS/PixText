@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "model_id": "PixText-MeanFlow",
+  "variant": "meanflow",
+  "weights": "ema",
+  "files": {
+    "config.json": "b45b510a6ed39bb9115f1ac9e5f8b3644f880d304842c53acd4896650381a1d5",
+    "fonts/AlibabaPuHuiTi-3-55-Regular.ttf": "be33bc8d45ced30fa5c542f6f056565baf85003d4e079522110d76016f8a04e2",
+    "fonts/GoNotoCJKCore-v7.0.ttf": "bfe18b47612e58ff28b568f32b55e35fde4505d6137581bf11d2363e257e2ad4",
+    "fonts/OFL-GoNoto.txt": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "inference_config.json": "edde55e9f06bbb6f13eba6873d63d4a42544544f4b447f891d9991cb73168ff3",
+    "model.safetensors": "d622bb403165c17853bcb9050e6df97330617df7d22516840f2be719240a08ea",
+    "fonts/README.md": "324d54226d3a8db749b06695255fa5e6548122ba67ff5f97a9f300b761c04fe6"
+  },
+  "code_version": "0.1.0"
+}

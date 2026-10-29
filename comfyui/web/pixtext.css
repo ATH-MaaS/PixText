@@ -77,23 +77,3 @@
 .pt-refiner-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #36c7b1, #a5f3d0); transition: width 120ms ease-out; }
 .pt-refiner-progress-fill[data-state="error"] { background: #fb7185; }
 .pt-refiner-progress-detail { display: block; margin-top: 7px; color: #a8b7c9; }
-
-.pt-ocr-setup { box-sizing: border-box; padding: 12px; border: 1px solid #354652; border-radius: 12px; background: linear-gradient(135deg, #1b2b31, #18212b 70%); color: #edf2f7; font: 12px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; gap: 8px; }
-.pt-ocr-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.pt-ocr-setup > * { flex-shrink: 0; }
-.pt-ocr-header strong { font-size: 13px; letter-spacing: .1px; }
-.pt-ocr-status { border-radius: 20px; padding: 2px 8px; color: #b9c8d4; background: #ffffff09; font-size: 10px; white-space: nowrap; }
-.pt-ocr-files { display: flex; gap: 5px; flex-wrap: wrap; }
-.pt-ocr-chip { padding: 2px 6px; border-radius: 5px; background: #ffffff08; color: #9aacbc; font-size: 10px; }
-.pt-ocr-chip[data-state="verified"], .pt-ocr-setup[data-state="ready"] .pt-ocr-status { color: #96f2dc; background: #5eead411; }
-.pt-ocr-chip[data-state="downloading"], .pt-ocr-chip[data-state="verifying"] { color: #fde68a; }
-.pt-ocr-track { height: 4px; border-radius: 99px; background: #0d171f; overflow: hidden; }
-.pt-ocr-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #38bba8, #a5f3d0); transition: width 150ms ease-out; }
-.pt-ocr-detail { min-height: 28px; font-size: 11px; color: #b5c4d2; line-height: 1.3; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.pt-ocr-action { width: 100%; box-sizing: border-box; min-height: 30px; padding: 5px 8px; border-radius: 7px; border: 1px solid #426d65; background: #28443f; color: #a2f2de; font: 600 12px system-ui, sans-serif; cursor: pointer; }
-.pt-ocr-action:hover:not(:disabled) { background: #33564e; border-color: #72d5bb; }
-.pt-ocr-action:focus-visible { outline: 2px solid #5eead4; outline-offset: 2px; }
-.pt-ocr-action:disabled { cursor: default; opacity: .7; }
-.pt-ocr-caption { color: #8097a8; font-size: 10px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pt-ocr-setup[data-state="error"] .pt-ocr-status { color: #fda4af; background: #fb718514; }
-.pt-ocr-setup[data-state="error"] .pt-ocr-fill { background: #fb7185; }

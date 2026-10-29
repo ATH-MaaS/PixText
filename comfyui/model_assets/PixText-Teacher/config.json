@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "variant": "teacher",
+  "model": {
+    "patch_size": 16,
+    "in_channels": 3,
+    "hidden_size": 1280,
+    "depth": 32,
+    "num_heads": 16,
+    "mlp_ratio": 4.0,
+    "axes_dims": [
+      12,
+      34,
+      34
+    ],
+    "theta": 10000.0,
+    "interval_conditioning": false,
+    "image_attention_routing": "items_interread_glyph_reads_own_item_bidirectional_main"
+  }
+}

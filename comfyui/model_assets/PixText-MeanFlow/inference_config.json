@@ -1,0 +1,43 @@
+{
+  "format_version": 1,
+  "geometry": {
+    "main_target_area": 1048576,
+    "patch_size": 16,
+    "clamp_main_to_reference": true
+  },
+  "sampling": {
+    "steps": 4,
+    "solver": "meanflow_interval_euler",
+    "guidance_scale": 3.3,
+    "guidance_interval": [
+      0.1,
+      1.0
+    ],
+    "noise_scale": 1.0,
+    "max_items_per_pass": 12
+  },
+  "main_condition": {
+    "degradation_region": "strict_ocr_bbox",
+    "operators": [
+      "defocus",
+      "gaussian_blur"
+    ],
+    "required_operators": [],
+    "min_operators": 2,
+    "max_operators": 2,
+    "severity_min": 0.7,
+    "severity_max": 1.0
+  },
+  "glyph": {
+    "font_sha256": "be33bc8d45ced30fa5c542f6f056565baf85003d4e079522110d76016f8a04e2",
+    "fallback_font_sha256": "bfe18b47612e58ff28b568f32b55e35fde4505d6137581bf11d2363e257e2ad4",
+    "occupancy": 0.85,
+    "layout_engine": "RAQM",
+    "language": "zh-CN",
+    "opentype_features": [
+      "locl"
+    ],
+    "font_path": "fonts/AlibabaPuHuiTi-3-55-Regular.ttf",
+    "fallback_font_path": "fonts/GoNotoCJKCore-v7.0.ttf"
+  }
+}

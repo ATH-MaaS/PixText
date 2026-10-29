@@ -75,8 +75,8 @@ python examples/run_pipeline.py --case english   # english_case
    python -m pip install -r PixText/requirements.txt
    ```
 
-2. 从 [Hugging Face](https://huggingface.co/ATH-MaaS/PixText) 下载完整模型包，放到 `ComfyUI/models/pixtext/PixText-MeanFlow/` 或 `ComfyUI/models/pixtext/PixText-Teacher/`。目录结构见[模型包](#模型包)。文字修复需要 NVIDIA CUDA GPU。
-3. 重启 ComfyUI，刷新浏览器。在 **模板 → PixText** 中打开示例，或把下面的工作流文件拖入画布。
+2. 重启 ComfyUI，刷新浏览器。在 **模板 → PixText** 中打开示例，或把下面的工作流文件拖入画布。缺少权重时，ComfyUI 会显示模型名称和下载链接。配置和字体随节点提供。文字修复需要 NVIDIA CUDA GPU。
+3. 点击缺失模型弹窗中的 **Download**。Desktop 会处理下载；浏览器或 Portable 安装请将文件保存为 `ComfyUI/models/diffusion_models/PixText-MeanFlow.safetensors` 或 `ComfyUI/models/diffusion_models/PixText-Teacher.safetensors`。连接远程服务器时，要把文件放到服务器上。保存后刷新模型列表。原先放在 `ComfyUI/models/pixtext/` 或 `ComfyUI/models/` 下的完整模型包也可以继续使用。
 
 ### 中文 · 手动画框修复
 
@@ -103,7 +103,7 @@ python -m pip install -r requirements-ocr.txt
 
 重启 ComfyUI，打开英文工作流：
 
-1. 在 **Detect Words** 中点击 **Prepare OCR models**，模型文件会下载到运行 ComfyUI 的机器上并完成校验。显示 **Verified** 后，点击 **运行**，检测单词框并识别文字。也可以按 [OCR 模型安装](docs/ocr-models.zh-CN.md) 手动准备文件。
+1. 按画布上的 **OCR model downloads** 备注下载三个 OCR 文件，放到备注列出的目录，再点击 **运行**，检测单词框并识别文字。[OCR 模型安装](docs/ocr-models.zh-CN.md) 中也有相同的链接和本地校验命令。
 2. 打开 **Region Editor**，微调框和目标词。示例中的目标词是 `Nayeon`、`Nicola`、`crossbody` 和 `fashionable`。勾选要修复的区域，再点击 **Apply regions**。
 3. 再次点击 **运行**，修复所选单词并查看对比结果。换用自己的图片时，在 **Detect Words** 中上传即可。
 
@@ -115,7 +115,7 @@ PixText 需要 Python 3.11 或更高版本和 CUDA GPU。[`pyproject.toml`](pypr
 pip install -e .
 ```
 
-PixText 使用支持 RAQM 的 Pillow 对目标文字排版，渲染出提供给模型的字形条件图。系统中还需要 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。PixText 直接使用模型包里的字体，不用另外安装系统字体。
+PixText 使用支持 RAQM 的 Pillow 对目标文字排版，渲染出提供给模型的字形条件图。系统中还需要 HarfBuzz（Debian/Ubuntu 中为 `libharfbuzz0`）。ComfyUI 节点和 Python 模型包都自带字体，不用另外安装系统字体。
 
 ## 模型包
 
